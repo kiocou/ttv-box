@@ -1,0 +1,45 @@
+[package]
+name = "ttv-backend"
+version = "0.1.0"
+description = "TTV desktop player backend"
+authors = ["TTV"]
+edition = "2021"
+
+[lib]
+name = "ttv_backend"
+crate-type = ["rlib"]
+
+[[bin]]
+name = "ttv-backend"
+path = "src/main.rs"
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+aes = "0.8"
+async-trait = "0.1"
+base64 = "0.22"
+chrono = { version = "0.4", features = ["clock", "serde"] }
+dirs = "6"
+libloading = "0.8"
+regex = "1"
+reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls", "cookies", "socks"] }
+scraper = "0.20"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+sha2 = "0.10"
+tauri = { version = "2", default-features = true, features = ["protocol-asset"] }
+thiserror = "2"
+tokio = { version = "1", features = ["macros", "rt-multi-thread", "sync", "time", "process", "io-util"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "fmt"] }
+uuid = { version = "1", features = ["serde", "v4"] }
+zip = { version = "2", default-features = false, features = ["deflate", "bzip2", "xz", "zstd"] }
+
+[target.'cfg(windows)'.dependencies]
+rusqlite = { version = "0.32", features = ["bundled"] }
+windows-sys = { version = "0.59", features = ["Win32_Security_Cryptography", "Win32_Foundation", "Win32_System_Memory", "Win32_Graphics_Gdi", "Win32_UI_WindowsAndMessaging", "Win32_UI_Input_KeyboardAndMouse"] }
+
+[target.'cfg(not(windows))'.dependencies]
+rusqlite = { version = "0.32", features = ["bundled"] }

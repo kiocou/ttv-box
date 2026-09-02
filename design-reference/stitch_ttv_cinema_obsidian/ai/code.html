@@ -1,0 +1,373 @@
+<!DOCTYPE html><html class="dark" lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>TTV Cinema - 设置</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500&amp;family=Plus+Jakarta+Sans:wght@400;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "surface-tint": "#7bd0ff",
+                        "on-primary-container": "#004965",
+                        "tertiary-fixed": "#6ffbbe",
+                        "background": "#111318",
+                        "primary": "#8ed5ff",
+                        "inverse-on-surface": "#2f3035",
+                        "on-secondary": "#472a00",
+                        "surface-variant": "#333539",
+                        "on-background": "#e2e2e8",
+                        "error": "#ffb4ab",
+                        "secondary-fixed-dim": "#ffb95f",
+                        "surface-container-low": "#1a1c20",
+                        "secondary-fixed": "#ffddb8",
+                        "on-primary": "#00354a",
+                        "on-error-container": "#ffdad6",
+                        "primary-fixed": "#c4e7ff",
+                        "secondary": "#ffb95f",
+                        "on-error": "#690005",
+                        "on-secondary-fixed": "#2a1700",
+                        "glass-surface": "rgba(10, 12, 16, 0.85)",
+                        "on-tertiary-container": "#004e34",
+                        "tech-cyan": "#38bdf8",
+                        "on-secondary-fixed-variant": "#653e00",
+                        "on-primary-fixed-variant": "#004c69",
+                        "error-container": "#93000a",
+                        "inverse-primary": "#00668a",
+                        "on-tertiary-fixed": "#002113",
+                        "tertiary": "#56e5a9",
+                        "on-tertiary-fixed-variant": "#005236",
+                        "primary-fixed-dim": "#7bd0ff",
+                        "surface-container-lowest": "#0c0e12",
+                        "tertiary-container": "#30c88f",
+                        "primary-container": "#38bdf8",
+                        "tertiary-fixed-dim": "#4edea3",
+                        "surface-bright": "#37393e",
+                        "on-primary-fixed": "#001e2c",
+                        "rating-gold": "#f59e0b",
+                        "surface": "#111318",
+                        "outline": "#87929a",
+                        "on-tertiary": "#003824",
+                        "surface-container": "#1e2024",
+                        "inverse-surface": "#e2e2e8",
+                        "secondary-container": "#ee9800",
+                        "status-green": "#10b981",
+                        "on-surface-variant": "#bdc8d1",
+                        "on-secondary-container": "#5b3800",
+                        "outline-variant": "#3e484f",
+                        "obsidian-base": "#0a0c10",
+                        "surface-container-highest": "#333539",
+                        "on-surface": "#e2e2e8",
+                        "surface-dim": "#111318",
+                        "surface-container-high": "#282a2e"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    spacing: {
+                        "margin-mobile": "16px",
+                        "gutter": "24px",
+                        "ratio-media": "2/3",
+                        "unit": "4px",
+                        "margin-desktop": "48px"
+                    },
+                    fontFamily: {
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "display-lg": ["Plus Jakarta Sans"],
+                        "metric-sm": ["JetBrains Mono"],
+                        "body-lg": ["Plus Jakarta Sans"],
+                        "metric-md": ["JetBrains Mono"],
+                        "headline-lg-mobile": ["Plus Jakarta Sans"],
+                        "body-md": ["Plus Jakarta Sans"]
+                    },
+                    fontSize: {
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "metric-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "metric-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .glow-cyan { text-shadow: 0 0 20px rgba(56,189,248,0.5); }
+        .hover\:glow-cyan:hover { box-shadow: 0 0 20px rgba(56,189,248,0.3); }
+        /* Custom scrollbar for webkit */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #333539; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #3e484f; }
+        
+        .metal-border {
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+        .active-cyan-glow {
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.2), inset 0 0 10px rgba(56, 189, 248, 0.1);
+            border-color: rgba(56, 189, 248, 0.4);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md min-h-screen overflow-hidden antialiased selection:bg-tech-cyan/30 selection:text-tech-cyan">
+<!-- Background Layer with Liquid Blur -->
+<div class="fixed inset-0 z-0">
+<div class="absolute inset-0 bg-gradient-to-br from-[#1a1130] via-background to-[#0f1b29] opacity-80"></div>
+<div class="absolute inset-0 bg-[url('https://lh3.googleusercontent.com/aida-public/AB6AXuDqDfTHrJmuT0kQr865upgD94UGqCzAt8-m3ILkjfPMJwtExcljeg2hEHG9qkYEnZfIdiMSKeFGMGYoZSSkKeA-BR-Lr6cZ3Oxk1w-XJUYFSzmslQZCYF00H9nt2SZp8flfySOoWXDfA4o96X6UqVrg2wQ3gz0hukxz7w9e8QtckregDZfLqZTuxYw5-NB5Tx-I2eZLnH_s5kRdHHo1fAHYtxDa_h8lHVv4h5HFWB_h10NNN0WA9hLlpA8MpzqTkXbnGA')] bg-cover bg-center mix-blend-overlay opacity-20 blur-3xl" data-alt="Abstract cinematic liquid background with deep purples and dark blues, subtle glowing orbs, high-end digital art style."></div>
+<div class="absolute inset-0 bg-background/60 backdrop-blur-[60px]"></div>
+</div>
+<!-- Main Content Container -->
+<main class="relative z-10 w-full h-screen flex items-center justify-center p-4 md:p-8">
+<!-- Settings Modal (Glassmorphism Panel) -->
+<div class="w-full max-w-[1200px] h-[90vh] bg-obsidian-base/85 backdrop-blur-3xl metal-border rounded-2xl flex flex-col shadow-2xl shadow-black/80 overflow-hidden relative">
+<!-- Inner glow -->
+<div class="absolute inset-0 rounded-2xl pointer-events-none border border-white/5 mix-blend-overlay"></div>
+<!-- Modal Header -->
+<nav class="flex-none w-full z-50 flex justify-center items-center px-margin-mobile md:px-margin-desktop py-6 border-b border-white/5 bg-black/20">
+  <div class="bg-glass-surface/90 backdrop-blur-2xl rounded-full mx-auto w-fit px-2 py-1.5 metal-border shadow-[0_0_30px_rgba(0,0,0,0.5)] flex items-center gap-1">
+    <!-- Brand -->
+    <div class="px-5 py-2 font-headline-md text-headline-md font-bold text-tech-cyan tracking-tight shrink-0 flex items-center gap-2">
+      <span class="material-symbols-outlined text-[24px]">movie_filter</span>
+      TTV Cinema
+    </div>
+    <!-- Navigation Links -->
+    <div class="hidden md:flex items-center gap-1">
+      <a class="px-5 py-2 rounded-full text-sm font-medium text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-colors" href="#">首页</a>
+      <a class="px-5 py-2 rounded-full text-sm font-medium text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-colors" href="#">媒体库</a>
+      <a class="px-5 py-2 rounded-full text-sm font-medium text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-colors" href="#">云端盘</a>
+      <a class="px-5 py-2 rounded-full text-sm font-medium text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-colors" href="#">收藏</a>
+      <a class="px-5 py-2 rounded-full text-sm font-medium text-tech-cyan bg-tech-cyan/10 border border-tech-cyan/20 transition-colors shadow-[0_0_15px_rgba(56,189,248,0.15)]" href="#">设置</a>
+    </div>
+    <!-- Trailing Actions -->
+    <div class="ml-2 pl-2 border-l border-white/10 flex items-center gap-2 pr-2">
+      <div class="flex flex-col items-end px-2">
+        <div class="font-metric-sm text-[10px] text-status-green flex items-center gap-1">
+          <span class="w-1.5 h-1.5 rounded-full bg-status-green animate-pulse"></span>
+          D3D11
+        </div>
+        <div class="font-metric-sm text-[10px] text-tech-cyan font-bold">144 FPS</div>
+      </div>
+      <button class="w-9 h-9 rounded-full flex items-center justify-center text-on-surface-variant hover:text-tech-cyan hover:bg-white/5 transition-all">
+        <span class="material-symbols-outlined">search</span>
+      </button>
+      <button class="w-9 h-9 rounded-full flex items-center justify-center text-tech-cyan hover:scale-105 transition-transform bg-white/5 border border-white/10">
+        <span class="material-symbols-outlined text-[24px]">person</span>
+      </button>
+    </div>
+  </div>
+</nav>
+<!-- Scrollable Content Area -->
+<div class="flex-1 overflow-y-auto p-8 space-y-8">
+<!-- Top Row: 播放体验 & 外部与服务 -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+<!-- 播放体验 (Playback Experience) -->
+<section class="bg-surface-container-low/40 rounded-xl p-6 metal-border backdrop-blur-sm relative overflow-hidden">
+<div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
+<h2 class="font-metric-sm text-metric-sm text-tech-cyan uppercase mb-6 flex items-center gap-2 tracking-widest">
+<span class="material-symbols-outlined text-[16px]">play_circle</span>
+  播放体验
+</h2>
+<div class="space-y-6">
+<!-- Option 1 -->
+<div class="flex items-center justify-between group">
+<span class="font-headline-md text-headline-md text-on-surface">兼容层</span>
+<button class="px-5 py-2 rounded-md bg-black/40 text-tech-cyan text-metric-sm font-metric-sm hover:bg-tech-cyan/10 transition-colors metal-border active-cyan-glow flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-tech-cyan"></span>
+  兼容
+</button>
+</div>
+<!-- Option 2 -->
+<div class="flex items-center justify-between group">
+<span class="font-headline-md text-headline-md text-on-surface">详情预加载</span>
+<button class="px-5 py-2 rounded-md bg-black/40 text-on-surface-variant text-metric-sm font-metric-sm hover:bg-white/5 transition-colors metal-border flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-surface-variant"></span>
+  关闭
+</button>
+</div>
+<!-- Option 3 (Pill Selector) -->
+<div class="flex items-center justify-between group">
+<span class="font-headline-md text-headline-md text-on-surface">启动默认页面</span>
+<div class="flex bg-black/40 rounded-md p-1 metal-border">
+<button class="px-4 py-1.5 rounded bg-tech-cyan/20 text-tech-cyan text-metric-sm font-metric-sm border border-tech-cyan/30 shadow-[0_0_10px_rgba(56,189,248,0.1)]">首页</button>
+<button class="px-4 py-1.5 rounded text-on-surface-variant hover:text-on-surface text-metric-sm font-metric-sm transition-colors">我的内容</button>
+<button class="px-4 py-1.5 rounded text-on-surface-variant hover:text-on-surface text-metric-sm font-metric-sm transition-colors">媒体库</button>
+<button class="px-4 py-1.5 rounded text-on-surface-variant hover:text-on-surface text-metric-sm font-metric-sm transition-colors">云盘</button>
+</div>
+</div>
+<!-- Option 4 (Pill Selector) -->
+<div class="flex items-center justify-between group">
+<span class="font-headline-md text-headline-md text-on-surface">顶栏页面</span>
+<div class="flex bg-black/40 rounded-md p-1 metal-border gap-1">
+<button class="px-4 py-1.5 rounded bg-surface-variant/80 text-on-surface text-metric-sm font-metric-sm border border-white/10">首页</button>
+<button class="px-4 py-1.5 rounded bg-surface-variant/80 text-on-surface text-metric-sm font-metric-sm border border-white/10">我的内容</button>
+<button class="px-4 py-1.5 rounded bg-surface-variant/80 text-on-surface text-metric-sm font-metric-sm border border-white/10">影视库</button>
+<button class="px-4 py-1.5 rounded bg-surface-variant/80 text-on-surface text-metric-sm font-metric-sm border border-white/10">云盘</button>
+</div>
+</div>
+<!-- Option 5 -->
+<div class="flex items-center justify-between group">
+<span class="font-headline-md text-headline-md text-on-surface">播放器管理</span>
+<button class="px-5 py-2 rounded-md bg-black/40 text-on-surface text-metric-sm font-metric-sm hover:bg-white/5 transition-colors metal-border flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]">settings</span>
+  管理
+</button>
+</div>
+</div>
+</section>
+<!-- 外部与服务 (External & Services) -->
+<section class="bg-surface-container-low/40 rounded-xl p-6 metal-border backdrop-blur-sm relative overflow-hidden flex flex-col justify-between">
+<div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
+<div>
+<h2 class="font-metric-sm text-metric-sm text-tech-cyan uppercase mb-6 flex items-center gap-2 tracking-widest">
+<span class="material-symbols-outlined text-[16px]">api</span>
+  外部与服务
+</h2>
+<div class="space-y-6">
+<!-- Option 1 -->
+<div class="flex items-center justify-between group">
+<span class="font-headline-md text-headline-md text-on-surface">外置播放器</span>
+<button class="px-5 py-2 rounded-md bg-black/40 text-on-surface-variant text-metric-sm font-metric-sm hover:bg-white/5 transition-colors metal-border flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-surface-variant"></span>
+  关闭
+</button>
+</div>
+<!-- Option 2 -->
+<div class="flex items-center justify-between group">
+<span class="font-headline-md text-headline-md text-on-surface">弹幕API</span>
+<button class="px-5 py-2 rounded-md bg-black/40 text-tech-cyan text-metric-sm font-metric-sm hover:bg-tech-cyan/10 transition-colors metal-border active-cyan-glow flex items-center gap-2">
+  默认弹幕源
+  <span class="material-symbols-outlined text-[16px]">expand_more</span>
+</button>
+</div>
+<!-- Option 3 -->
+<div class="flex items-center justify-between group">
+<span class="font-headline-md text-headline-md text-on-surface">字幕API</span>
+<button class="px-5 py-2 rounded-md bg-black/40 text-tech-cyan text-metric-sm font-metric-sm hover:bg-tech-cyan/10 transition-colors metal-border active-cyan-glow truncate max-w-[200px] flex items-center gap-2">
+  字幕 (内置·文件精确匹配)
+  <span class="material-symbols-outlined text-[16px]">expand_more</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- Middle Row: 性能与缓存 & 系统 -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+<!-- 性能与缓存 (Performance & Cache) -->
+<section class="bg-surface-container-low/40 rounded-xl p-6 metal-border backdrop-blur-sm relative overflow-hidden">
+<div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
+<h2 class="font-metric-sm text-metric-sm text-tech-cyan uppercase mb-6 flex items-center gap-2 tracking-widest">
+<span class="material-symbols-outlined text-[16px]">memory</span>
+  性能与缓存
+</h2>
+<div class="space-y-6">
+<div class="flex items-center justify-between group">
+<span class="font-headline-md text-headline-md text-on-surface">性能模式</span>
+<button class="px-5 py-2 rounded-md bg-black/40 text-status-green text-metric-sm font-metric-sm hover:bg-status-green/10 transition-colors metal-border border-status-green/30 shadow-[0_0_15px_rgba(16,185,129,0.1)] flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]">bolt</span>
+  极致
+</button>
+</div>
+<div class="flex items-center justify-between group">
+<span class="font-headline-md text-headline-md text-on-surface">代理加速</span>
+<button class="px-5 py-2 rounded-md bg-black/40 text-tech-cyan text-metric-sm font-metric-sm hover:bg-tech-cyan/10 transition-colors metal-border active-cyan-glow flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-tech-cyan"></span>
+  开启
+</button>
+</div>
+</div>
+</section>
+<!-- 系统 (System) -->
+<section class="bg-surface-container-low/40 rounded-xl p-6 metal-border backdrop-blur-sm relative overflow-hidden">
+<div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
+<h2 class="font-metric-sm text-metric-sm text-tech-cyan uppercase mb-6 flex items-center gap-2 tracking-widest">
+<span class="material-symbols-outlined text-[16px]">computer</span>
+  系统
+</h2>
+<div class="space-y-6">
+<div class="flex items-center justify-between group">
+<span class="font-headline-md text-headline-md text-on-surface">检查更新</span>
+<button class="px-5 py-2 rounded-md bg-black/40 text-on-surface-variant font-metric-sm text-metric-sm hover:bg-white/5 transition-colors metal-border flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]">update</span>
+  v1.2.6
+</button>
+</div>
+</div>
+</section>
+</div>
+<!-- Callout Banner: 新手引导 -->
+<div class="w-full bg-tech-cyan/5 metal-border border-tech-cyan/30 rounded-xl p-6 flex items-center justify-between group hover:bg-tech-cyan/10 transition-colors cursor-pointer relative overflow-hidden">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-tech-cyan shadow-[0_0_10px_rgba(56,189,248,0.8)]"></div>
+<div class="flex items-center gap-4 pl-4">
+<div class="w-12 h-12 rounded-lg bg-black/40 metal-border flex items-center justify-center text-tech-cyan shadow-[inset_0_0_15px_rgba(56,189,248,0.1)]">
+<span class="material-symbols-outlined text-[24px]" style="font-variation-settings: 'FILL' 1;">explore</span>
+</div>
+<div>
+<h3 class="font-headline-md text-body-lg text-on-surface font-semibold mb-1 tracking-wide">新手引导</h3>
+<p class="font-body-md text-metric-sm text-on-surface-variant">重新查看注册、片源、云盘刮削与文件浏览步骤</p>
+</div>
+</div>
+<span class="font-metric-sm text-metric-md text-tech-cyan flex items-center gap-1 group-hover:glow-cyan transition-all uppercase tracking-wider">
+  重新观看
+  <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</span>
+</div>
+<!-- Bottom Row: 关于 -->
+<section class="bg-surface-container-low/40 rounded-xl p-6 metal-border backdrop-blur-sm relative overflow-hidden">
+<div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
+<h2 class="font-metric-sm text-metric-sm text-tech-cyan uppercase mb-6 flex items-center gap-2 tracking-widest">
+<span class="material-symbols-outlined text-[16px]">info</span>
+  关于
+</h2>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+<!-- 法务条款 -->
+<div>
+<h3 class="font-metric-sm text-metric-sm text-on-surface-variant/70 mb-4 tracking-widest uppercase">法务条款</h3>
+<div class="space-y-4">
+<div class="flex items-center justify-between">
+<span class="font-headline-md text-body-lg text-on-surface">隐私政策</span>
+<button class="px-4 py-1.5 rounded-md bg-black/40 text-on-surface text-metric-sm font-metric-sm hover:bg-white/5 transition-colors metal-border">查看</button>
+</div>
+<div class="flex items-center justify-between">
+<span class="font-headline-md text-body-lg text-on-surface">用户协议</span>
+<button class="px-4 py-1.5 rounded-md bg-black/40 text-on-surface text-metric-sm font-metric-sm hover:bg-white/5 transition-colors metal-border">查看</button>
+</div>
+</div>
+</div>
+<!-- 联系方式 -->
+<div>
+<h3 class="font-metric-sm text-metric-sm text-on-surface-variant/70 mb-4 tracking-widest uppercase">联系方式</h3>
+<div class="space-y-4">
+<div class="flex items-center justify-between">
+<span class="font-headline-md text-body-lg text-on-surface">官网</span>
+<a class="px-4 py-1.5 rounded-md bg-black/40 text-on-surface-variant text-metric-sm font-metric-sm hover:bg-white/5 transition-colors metal-border hover:text-tech-cyan" href="#">http://www.chenlumi.fun</a>
+</div>
+<div class="flex items-center justify-between">
+<span class="font-headline-md text-body-lg text-on-surface">交流群</span>
+<span class="px-4 py-1.5 rounded-md bg-black/40 text-on-surface-variant text-metric-sm font-metric-sm metal-border select-all">QQ: 686584988</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="font-headline-md text-body-lg text-on-surface">作者邮箱</span>
+<span class="px-4 py-1.5 rounded-md bg-black/40 text-on-surface-variant text-metric-sm font-metric-sm metal-border select-all">1214867903@qq.com</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+</div>
+</main>
+
+
+</body></html>

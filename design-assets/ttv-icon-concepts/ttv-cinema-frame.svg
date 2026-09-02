@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="none">
+  <defs>
+    <radialGradient id="base" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(330 236) rotate(48) scale(850)">
+      <stop stop-color="#1E2B42"/>
+      <stop offset="0.5" stop-color="#0C1320"/>
+      <stop offset="1" stop-color="#070A10"/>
+    </radialGradient>
+    <linearGradient id="screen" x1="240" y1="244" x2="780" y2="792" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#3DD6FF"/>
+      <stop offset="0.48" stop-color="#526FFF"/>
+      <stop offset="1" stop-color="#9B58F5"/>
+    </linearGradient>
+    <linearGradient id="glass" x1="246" y1="206" x2="794" y2="836" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFFFFF" stop-opacity="0.24"/>
+      <stop offset="0.45" stop-color="#FFFFFF" stop-opacity="0.07"/>
+      <stop offset="1" stop-color="#7F9BFF" stop-opacity="0.12"/>
+    </linearGradient>
+    <filter id="shadow" x="76" y="80" width="872" height="886" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="38" stdDeviation="38" flood-color="#00050C" flood-opacity="0.8"/>
+    </filter>
+    <filter id="screenGlow" x="150" y="160" width="724" height="704" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="0" stdDeviation="28" flood-color="#596BFF" flood-opacity="0.42"/>
+    </filter>
+  </defs>
+  <g filter="url(#shadow)">
+    <rect x="112" y="106" width="800" height="812" rx="218" fill="url(#base)"/>
+    <rect x="113.5" y="107.5" width="797" height="809" rx="216.5" stroke="url(#glass)" stroke-width="3"/>
+  </g>
+  <g filter="url(#screenGlow)">
+    <rect x="229" y="236" width="566" height="552" rx="122" stroke="url(#screen)" stroke-width="34"/>
+  </g>
+  <path d="M430 385C430 358 460 342 483 356L653 463C689 486 689 538 653 561L483 668C460 682 430 666 430 639V385Z" fill="#FFFFFF"/>
+  <path d="M271 326V300C271 288 281 278 293 278H319" stroke="#B8F1FF" stroke-width="18" stroke-linecap="round"/>
+  <path d="M753 698V724C753 736 743 746 731 746H705" stroke="#C9B5FF" stroke-width="18" stroke-linecap="round"/>
+  <rect x="322" y="823" width="380" height="18" rx="9" fill="url(#screen)" opacity="0.72"/>
+</svg>

@@ -1,0 +1,394 @@
+<!DOCTYPE html><html class="dark" lang="zh-CN" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>TTV Cinema</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-surface": "#e2e2e8",
+                        "surface-variant": "#333539",
+                        "surface-dim": "#111318",
+                        "background": "#111318",
+                        "surface-container-highest": "#333539",
+                        "on-tertiary-fixed-variant": "#005236",
+                        "on-error-container": "#ffdad6",
+                        "error": "#ffb4ab",
+                        "obsidian-base": "#0a0c10",
+                        "secondary-fixed": "#ffddb8",
+                        "on-primary-fixed-variant": "#004c69",
+                        "secondary": "#ffb95f",
+                        "on-secondary-fixed": "#2a1700",
+                        "surface": "#111318",
+                        "primary-container": "#38bdf8",
+                        "tertiary-fixed-dim": "#4edea3",
+                        "primary-fixed-dim": "#7bd0ff",
+                        "on-primary-fixed": "#001e2c",
+                        "surface-tint": "#7bd0ff",
+                        "on-primary": "#00354a",
+                        "secondary-container": "#ee9800",
+                        "on-error": "#690005",
+                        "primary": "#8ed5ff",
+                        "on-tertiary-container": "#004e34",
+                        "tertiary": "#56e5a9",
+                        "surface-container-high": "#282a2e",
+                        "rating-gold": "#f59e0b",
+                        "on-tertiary": "#003824",
+                        "surface-container": "#1e2024",
+                        "surface-bright": "#37393e",
+                        "tertiary-container": "#30c88f",
+                        "on-primary-container": "#004965",
+                        "tertiary-fixed": "#6ffbbe",
+                        "on-surface": "#e2e2e8",
+                        "outline-variant": "#3e484f",
+                        "status-green": "#10b981",
+                        "inverse-on-surface": "#2f3035",
+                        "glass-surface": "rgba(10, 12, 16, 0.85)",
+                        "on-tertiary-fixed": "#002113",
+                        "surface-container-low": "#1a1c20",
+                        "outline": "#87929a",
+                        "inverse-primary": "#00668a",
+                        "primary-fixed": "#c4e7ff",
+                        "tech-cyan": "#38bdf8",
+                        "on-secondary-fixed-variant": "#653e00",
+                        "surface-container-lowest": "#0c0e12",
+                        "secondary-fixed-dim": "#ffb95f",
+                        "on-secondary": "#472a00",
+                        "on-secondary-container": "#5b3800",
+                        "on-surface-variant": "#bdc8d1",
+                        "error-container": "#93000a",
+                        "on-background": "#e2e2e8"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-desktop": "48px",
+                        "margin-mobile": "16px",
+                        "gutter": "24px",
+                        "ratio-media": "2/3"
+                    },
+                    "fontFamily": {
+                        "metric-sm": ["JetBrains Mono"],
+                        "display-lg": ["Plus Jakarta Sans"],
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "headline-lg-mobile": ["Plus Jakarta Sans"],
+                        "body-lg": ["Plus Jakarta Sans"],
+                        "body-md": ["Plus Jakarta Sans"],
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "metric-md": ["JetBrains Mono"]
+                    },
+                    "fontSize": {
+                        "metric-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "metric-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.02em", "fontWeight": "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: #0a0c10;
+            color: #e2e2e8;
+            margin: 0;
+            overflow: hidden; /* Hide scrollbars for 100vh immersive effect */
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        
+        .hero-vignette {
+            background: radial-gradient(circle at center, transparent 0%, #0a0c10 100%);
+        }
+
+        .glass-metal-border {
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: linear-gradient(to bottom right, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.01));
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+        }
+
+        .hover-glow:hover {
+            box-shadow: 0 0 30px rgba(56, 189, 248, 0.4);
+            transform: scale(1.05);
+            border-color: #38bdf8;
+        }
+
+        .text-glow {
+            text-shadow: 0 0 15px rgba(56, 189, 248, 0.6);
+        }
+
+        /* Floating Dynamic Stack Styles */
+        .card-stack {
+            position: relative;
+            width: 780px;
+            height: 380px;
+            perspective: 1200px;
+        }
+
+        .floating-card-wrapper {
+            position: absolute;
+            transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), z-index 0s;
+            pointer-events: auto;
+        }
+
+        .floating-card-wrapper:hover {
+            z-index: 100 !important;
+            transform: translateY(-20px) rotate(0deg) !important;
+        }
+
+        .stacked-card {
+            position: relative;
+            width: 220px;
+            height: 330px;
+            border-radius: 16px;
+            cursor: pointer;
+            background: rgba(10, 12, 16, 0.2);
+            backdrop-filter: blur(64px);
+            -webkit-backdrop-filter: blur(64px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+            transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transform-style: preserve-3d;
+        }
+
+        .floating-card-wrapper:hover .stacked-card {
+            transform: scale(1.1) rotateX(4deg) rotateY(-4deg);
+            border-color: rgba(56, 189, 248, 0.6);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.8), 0 0 40px rgba(56, 189, 248, 0.3);
+        }
+
+        .card-glow {
+            position: absolute;
+            inset: -20px;
+            background: radial-gradient(circle at center, rgba(56, 189, 248, 0.5) 0%, transparent 70%);
+            z-index: -1;
+            opacity: 0;
+            transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            pointer-events: none;
+            border-radius: 30px;
+            filter: blur(25px);
+        }
+
+        .floating-card-wrapper:hover .card-glow {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+
+        .card-content {
+            position: absolute;
+            inset: 0;
+            border-radius: 15px;
+            overflow: hidden;
+            background: #0a0c10;
+        }
+
+        .diffuse-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            height: 60%;
+            background: radial-gradient(ellipse at center, rgba(56,189,248,0.15) 0%, transparent 70%);
+            z-index: -1;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body class="antialiased h-screen w-screen relative">
+<!-- Ambient background image for hero -->
+<div class="fixed inset-0 z-0 bg-black/40">
+<div class="bg-cover bg-center w-full h-full opacity-60 mix-blend-screen" data-alt="A highly detailed, cinematic movie still showing an epic science fiction cityscape at night. The scene is illuminated by neon blue and magenta lights reflecting off slick, wet surfaces. The lighting is dramatic, high-contrast, and moody, perfectly suited for a premium dark-mode home theater interface background." style="background-image: url(&quot;https://lh3.googleusercontent.com/aida-public/AB6AXuBPf28pfdXtTzJ4gl2jWVILVTBw7oOEBIygBcaHWiFWYI5shioAthLv2ZFPunI9IUXGDXLKakrG-7cvmvIeLaJusto205X58sDTB6d6beGgIqND5SwdjmaXAEXg3-ZTy2JoYK0rSG_O9t0SAp3SM4ute4sFN8uiYovxS4sMk2ISH5FuKHEOvWJ_cHNxGOEqx9MApcfYwa6zpoh7KdJ7Yox2FXDe8m4j4RVPng4e1KDJg-HHgZSRI146&quot;);"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-[#0a0c10] via-transparent to-transparent opacity-80"></div>
+<div class="absolute inset-0 hero-vignette opacity-70"></div>
+</div>
+<!-- Navigation Shell (TopNavBar) -->
+<nav class="fixed top-6 left-0 right-0 z-50 px-12 py-6 flex items-center justify-between pointer-events-none">
+  <!-- Left: Brand -->
+  <div class="flex items-center gap-4 pointer-events-auto">
+    
+    <div class="h-4 w-[1px] bg-white/10 mx-2"></div>
+    <div class="flex items-center gap-3 bg-black/40 backdrop-blur-md rounded-full px-4 py-1.5 border border-white/10">
+      
+      
+    </div>
+  </div>
+
+  <!-- Center: Navigation -->
+  <div class="absolute left-1/2 -translate-x-1/2 flex items-center gap-1 bg-glass-surface/60 backdrop-blur-xl rounded-full p-1 border border-white/10 shadow-lg pointer-events-auto">
+    <a href="#" class="px-6 py-2 rounded-full text-sm font-bold text-tech-cyan bg-tech-cyan/10 border border-tech-cyan/20 shadow-[0_0_15px_rgba(56,189,248,0.2)] transition-all">首页</a>
+    <a href="#" class="px-6 py-2 rounded-full text-sm font-medium text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all">媒体库</a>
+    <a href="#" class="px-6 py-2 rounded-full text-sm font-medium text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all">云盘</a>
+    <a href="#" class="px-6 py-2 rounded-full text-sm font-medium text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all">历史</a>
+  </div>
+
+  <!-- Right: Status & Profile -->
+  
+</nav>
+<!-- Main Content Canvas (Hero Info positioned mid-top-left) -->
+<main class="fixed left-12 z-30 max-w-2xl top-32">
+<div class="diffuse-glow"></div>
+<div class="relative">
+<h1 class="font-display-lg text-[64px] leading-[72px] text-white font-bold mb-4 tracking-tight drop-shadow-[0_4px_12px_rgba(0,0,0,0.8)]">
+            蜘蛛侠：新之日
+        </h1>
+<div class="flex flex-wrap items-center gap-3 mb-6 font-metric-sm text-metric-sm text-on-surface-variant uppercase bg-black/20 backdrop-blur-md p-1.5 rounded-lg border border-white/10 w-fit">
+<div class="flex items-center gap-1 text-rating-gold bg-black/40 px-3 py-1 rounded shadow-inner">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: &quot;FILL&quot; 1;">star</span>
+<span class="font-bold">9.2</span>
+</div>
+<div class="bg-black/40 px-3 py-1 rounded">2024</div>
+<div class="bg-black/40 px-3 py-1 rounded text-tech-cyan font-bold">4K HDR</div>
+<div class="bg-black/40 px-3 py-1 rounded">DOLBY ATMOS</div>
+<div class="bg-black/40 px-3 py-1 rounded">科幻 / 动作</div>
+</div>
+<p class="font-body-lg text-[18px] leading-relaxed text-gray-300 mb-8 max-w-xl drop-shadow-md">
+            在平行宇宙的交汇处，彼得·帕克面临着前所未有的危机。当新的反派试图撕裂现实的结构时，他必须联合其他维度的蜘蛛侠，共同拯救多元宇宙免于崩溃。这是一场视觉与情感的双重盛宴。
+        </p>
+<div class="flex items-center gap-4">
+<button class="bg-gradient-to-r from-tech-cyan to-blue-500 text-obsidian-base font-headline-md text-[18px] font-bold py-3 px-8 rounded-full flex items-center gap-2 hover:scale-105 hover:shadow-[0_0_30px_rgba(56,189,248,0.6)] transition-all duration-300 active:scale-95 border border-white/20">
+<span class="material-symbols-outlined text-[24px]" style="font-variation-settings: &quot;FILL&quot; 1;">play_arrow</span>
+                立即播放
+            </button>
+<button class="glass-metal-border text-on-surface font-headline-md font-bold w-12 h-12 rounded-full flex items-center justify-center hover:scale-110 hover:border-tech-cyan hover:text-tech-cyan hover:shadow-[0_0_20px_rgba(56,189,248,0.3)] transition-all duration-300 active:scale-95 group">
+<span class="material-symbols-outlined text-[28px] group-hover:text-glow">add</span>
+</button>
+</div>
+</div>
+</main>
+<!-- Right Side / Bottom: Stacked Gallery (最新影视) -->
+<div class="fixed bottom-12 z-40 w-full overflow-visible right-12 flex flex-col items-end pointer-events-none">
+<h2 class="font-headline-md text-[18px] text-white font-bold mb-6 flex items-center gap-2 bg-black/30 px-5 py-2 rounded-full border border-white/10 backdrop-blur-3xl w-fit mr-4 shadow-lg pointer-events-auto">
+<span class="w-2 h-2 bg-tech-cyan rounded-full shadow-[0_0_12px_rgba(56,189,248,0.9)] animate-pulse"></span>
+            最新影视推荐
+        </h2>
+<div class="card-stack">
+<!-- Card 1 -->
+<div class="floating-card-wrapper" style="right: 520px; transform: rotate(-2.5deg) translateY(8px); z-index: 10;">
+<div class="stacked-card group">
+<div class="card-glow"></div>
+<div class="card-content">
+<img class="w-full h-full object-cover" data-alt="A cinematic movie poster for a sci-fi thriller featuring a lone astronaut standing on a desolate alien landscape." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAVfLytHqZ0WU7wXdZuHYKpD7dlY3WAzX6P9-I2EM_iDLKjcLRqRx759aHURXpI4q4lkE1AX9vOwm2bEVdZq7PcjV1dkZ4McI6BXoMw-JL4YmGbenES9UCYDNJ7ifGQkpus7m6Nnxmjw1LmRI03QgFIalk0AmrZ5RoiWIOi7uA9JEkFgi6IbTXyv1PpglnN359sqYV_rl8l-BeRdkEAgpvu6g-CXSs53IoVbAfTuPk0FzP4x6_-QhUV">
+<div class="absolute inset-0 bg-gradient-to-t from-[#0a0c10] via-[#0a0c10]/20 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-5">
+<h3 class="text-white font-bold text-lg mb-1 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">虚空漫游者</h3>
+<div class="flex items-center gap-2 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500 opacity-0 group-hover:opacity-100 delay-75">
+<span class="text-tech-cyan text-xs font-medium">2024</span>
+<span class="text-white/30 text-xs">|</span>
+<span class="text-gray-300 text-xs">科幻</span>
+</div>
+</div>
+<div class="absolute top-3 right-3 bg-black/40 backdrop-blur-xl rounded-full px-2.5 py-1 flex items-center gap-1 font-metric-sm text-rating-gold z-10 border border-white/20 shadow-md">
+<span class="material-symbols-outlined text-[12px]" style="font-variation-settings: &quot;FILL&quot; 1;">star</span>
+                        8.8
+                    </div>
+</div>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="floating-card-wrapper" style="right: 390px; transform: rotate(1.5deg) translateY(-5px); z-index: 20;">
+<div class="stacked-card group">
+<div class="card-glow"></div>
+<div class="card-content">
+<img class="w-full h-full object-cover" data-alt="A dramatic movie poster for an action film showing a sleek, futuristic sports car speeding through a neon-lit cyberpunk city." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAkXGQ6g3U4XIh_lj2D2VBeBjy2cHI8kAf2xiA8EIHPts0uDOLY3kt-hAG_MNht-adkUu_vEVTGEZ7fZnyTwaaAIIkxwnlVy6aLq-L7Tytgsr9T3xrzRhT8gDHW-TWvaE3sqJMDkbUNSQ2eM9YSvkHebgEeHFXdBtAQj61QmL9xtiow1rFRpZIv4XymPk9oRc8lDtxt4YAdoPdpJNP_kF5BPIb3_QksKkw0OLsMD_y370ERLa0nt-A5">
+<div class="absolute inset-0 bg-gradient-to-t from-[#0a0c10] via-[#0a0c10]/20 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-5">
+<h3 class="text-white font-bold text-lg mb-1 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">霓虹赛道</h3>
+<div class="flex items-center gap-2 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500 opacity-0 group-hover:opacity-100 delay-75">
+<span class="text-tech-cyan text-xs font-medium">2023</span>
+<span class="text-white/30 text-xs">|</span>
+<span class="text-gray-300 text-xs">动作</span>
+</div>
+</div>
+<div class="absolute top-3 right-3 bg-black/40 backdrop-blur-xl rounded-full px-2.5 py-1 flex items-center gap-1 font-metric-sm text-rating-gold z-10 border border-white/20 shadow-md">
+<span class="material-symbols-outlined text-[12px]" style="font-variation-settings: &quot;FILL&quot; 1;">star</span>
+                        7.9
+                    </div>
+</div>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="floating-card-wrapper" style="right: 260px; transform: rotate(-1.5deg) translateY(4px); z-index: 30;">
+<div class="stacked-card group">
+<div class="card-glow"></div>
+<div class="card-content">
+<img class="w-full h-full object-cover" data-alt="A high-contrast movie poster for a psychological thriller. It features a silhouetted figure standing in a dimly lit hallway." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA49itx00x0qsV9HnckuOoMO80QlPh6ZIlvnzhp6G89BUB50HOwGyX19BOpNNbr2FZjT1tFouT_tBoGEEeTMwacxpyI8MtRgYhY5wz_tZyqiBoq8akQEca4-3RWs0xygv4pdrSrVjWW-g-UowWiB_3EY1Ezg66zHT1GLhwjqJhQw3x1DhemW0wfEG_WBgp2rKxhTIFFlPwiNRTUiK-j9Z9neYq0Nxb4Wo3wikgD87vjBDfemjmNgNHY">
+<div class="absolute inset-0 bg-gradient-to-t from-[#0a0c10] via-[#0a0c10]/40 to-transparent opacity-100 transition-opacity duration-500 flex flex-col justify-end p-5">
+<div class="w-10 h-10 bg-tech-cyan rounded-full flex items-center justify-center text-obsidian-base mb-3 mx-auto shadow-[0_0_20px_rgba(56,189,248,0.6)] transform scale-100 group-hover:scale-110 transition-transform duration-500">
+<span class="material-symbols-outlined text-[24px]" style="font-variation-settings: &quot;FILL&quot; 1;">play_arrow</span>
+</div>
+<h3 class="text-white font-bold text-xl mb-1 text-center">回音密室</h3>
+<div class="flex justify-center items-center gap-2">
+<span class="text-tech-cyan text-xs font-bold px-1.5 py-0.5 bg-tech-cyan/20 rounded">NEW</span>
+<span class="text-white/30 text-xs">|</span>
+<span class="text-gray-300 text-xs">悬疑</span>
+</div>
+</div>
+<div class="absolute top-3 right-3 bg-black/40 backdrop-blur-xl rounded-full px-2.5 py-1 flex items-center gap-1 font-metric-sm text-rating-gold z-10 border border-white/20 shadow-md">
+<span class="material-symbols-outlined text-[12px]" style="font-variation-settings: &quot;FILL&quot; 1;">star</span>
+                        9.5
+                    </div>
+</div>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="floating-card-wrapper" style="right: 130px; transform: rotate(2.5deg) translateY(-8px); z-index: 40;">
+<div class="stacked-card group">
+<div class="card-glow"></div>
+<div class="card-content">
+<img class="w-full h-full object-cover" data-alt="An atmospheric movie poster for an epic fantasy. It shows a majestic, ancient castle perched on a sheer cliff edge at twilight." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBYjFw_3ejS0NfzYcIwlvFg3xf9RV_eDs236XJ-RNyk63RE6aDUGuRIgh2sSn83Swdo5yyh7N0RNFegOM7sKLaOcwAls1UhnZzGnAoMhYyjlEBgkIn98w0qumY1pn0a1t-fx3EjZT1toOYPXr-jfT0pdVq5mflnIB-rPLXlyMYH2zTiq6_1p1DjsGiTW3cODhlaa5lNs7jDbrh26zOmfDDN9Cr6xk7a8CvCKDo6XVbVtSiKdOgIcUnG">
+<div class="absolute inset-0 bg-gradient-to-t from-[#0a0c10] via-[#0a0c10]/20 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-5">
+<h3 class="text-white font-bold text-lg mb-1 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">龙裔：王国之巅</h3>
+<div class="flex items-center gap-2 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500 opacity-0 group-hover:opacity-100 delay-75">
+<span class="text-tech-cyan text-xs font-medium">2024</span>
+<span class="text-white/30 text-xs">|</span>
+<span class="text-gray-300 text-xs">奇幻</span>
+</div>
+</div>
+<div class="absolute top-3 right-3 bg-black/40 backdrop-blur-xl rounded-full px-2.5 py-1 flex items-center gap-1 font-metric-sm text-rating-gold z-10 border border-white/20 shadow-md">
+<span class="material-symbols-outlined text-[12px]" style="font-variation-settings: &quot;FILL&quot; 1;">star</span>
+                        8.2
+                    </div>
+</div>
+</div>
+</div>
+<!-- Card 5 -->
+<div class="floating-card-wrapper hidden md:block" style="right: 0px; transform: rotate(-1deg) translateY(12px); z-index: 50;">
+<div class="stacked-card group">
+<div class="card-glow"></div>
+<div class="card-content">
+<img class="w-full h-full object-cover grayscale-[20%]" data-alt="Dark atmospheric movie poster." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBPf28pfdXtTzJ4gl2jWVILVTBw7oOEBIygBcaHWiFWYI5shioAthLv2ZFPunI9IUXGDXLKakrG-7cvmvIeLaJusto205X58sDTB6d6beGgIqND5SwdjmaXAEXg3-ZTy2JoYK0rSG_O9t0SAp3SM4ute4sFN8uiYovxS4sMk2ISH5FuKHEOvWJ_cHNxGOEqx9MApcfYwa6zpoh7KdJ7Yox2FXDe8m4j4RVPng4e1KDJg-HHgZSRI146">
+<div class="absolute inset-0 bg-[#0a0c10]/30 group-hover:bg-transparent transition-colors duration-500"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-[#0a0c10] via-[#0a0c10]/20 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-5">
+<h3 class="text-white font-bold text-lg mb-1 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">赛博极客</h3>
+<div class="flex items-center gap-2 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500 opacity-0 group-hover:opacity-100 delay-75">
+<span class="text-tech-cyan text-xs font-medium">2022</span>
+<span class="text-white/30 text-xs">|</span>
+<span class="text-gray-300 text-xs">赛博朋克</span>
+</div>
+</div>
+<div class="absolute top-3 right-3 bg-black/40 backdrop-blur-xl rounded-full px-2.5 py-1 flex items-center gap-1 font-metric-sm text-rating-gold z-10 border border-white/20 shadow-md">
+<span class="material-symbols-outlined text-[12px]" style="font-variation-settings: &quot;FILL&quot; 1;">star</span>
+                        8.5
+                    </div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+
+
+</body></html>

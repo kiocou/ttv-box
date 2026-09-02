@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="none">
+  <defs>
+    <linearGradient id="shell" x1="178" y1="116" x2="850" y2="914" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#1C2940"/>
+      <stop offset="0.5" stop-color="#0B121E"/>
+      <stop offset="1" stop-color="#070A11"/>
+    </linearGradient>
+    <linearGradient id="beamA" x1="300" y1="260" x2="676" y2="792" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#41D8FF"/>
+      <stop offset="1" stop-color="#506CFF"/>
+    </linearGradient>
+    <linearGradient id="beamB" x1="430" y1="260" x2="792" y2="770" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#7382FF"/>
+      <stop offset="1" stop-color="#A956F6"/>
+    </linearGradient>
+    <linearGradient id="play" x1="407" y1="370" x2="654" y2="652" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#DDE5FF"/>
+    </linearGradient>
+    <filter id="shadow" x="84" y="82" width="854" height="878" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="38" stdDeviation="38" flood-color="#00050C" flood-opacity="0.8"/>
+    </filter>
+    <filter id="glow" x="207" y="172" width="610" height="692" filterUnits="userSpaceOnUse">
+      <feGaussianBlur stdDeviation="24"/>
+    </filter>
+  </defs>
+  <g filter="url(#shadow)">
+    <rect x="120" y="108" width="784" height="808" rx="224" fill="url(#shell)"/>
+    <rect x="121.5" y="109.5" width="781" height="805" rx="222.5" stroke="#FFFFFF" stroke-opacity="0.14" stroke-width="3"/>
+  </g>
+  <path d="M309 278C309 250 341 233 365 248L633 421C699 464 699 560 633 603L365 776C341 791 309 774 309 746V278Z" fill="#4C78FF" opacity="0.3" filter="url(#glow)"/>
+  <path d="M284 294C284 252 331 227 366 250L676 449C722 478 722 546 676 575L366 774C331 797 284 772 284 730V294Z" fill="url(#beamA)"/>
+  <path d="M408 294C408 252 455 227 490 250L800 449C846 478 846 546 800 575L490 774C455 797 408 772 408 730V294Z" fill="url(#beamB)" fill-opacity="0.82"/>
+  <path d="M424 374C424 349 452 334 473 347L661 466C695 487 695 537 661 558L473 677C452 690 424 675 424 650V374Z" fill="url(#play)"/>
+  <path d="M299 235C359 180 431 154 512 154C607 154 689 189 754 260" stroke="#FFFFFF" stroke-opacity="0.09" stroke-width="22" stroke-linecap="round"/>
+</svg>

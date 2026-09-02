@@ -1,0 +1,50 @@
+# Dependencies / build outputs
+node_modules/
+dist/
+前端/dist/
+src-tauri/target/
+src-tauri/target-*/
+src-tauri/target2/
+target-*/
+target-check/
+src-tauri/gen/schemas/
+
+# Runtime data & player artifacts
+.ttv-data/
+.downloads/
+src-tauri/resources/
+events.jsonl
+config.json
+views.json
+
+# Logs
+*.log
+
+# Tooling caches / temp dirs
+.playwright-mcp/
+.serena/
+.tmp-*/
+tmp-*/
+.claude/
+myagents_files/
+.codex-temp/
+.obsidian/
+.rollback/
+.zcode/
+sessions/
+statuses/
+docs/archive/
+docs/chat-history/
+docs/javboss-local-changes.patch
+docs/javboss-untracked-files.txt
+tools/questionnaire/.docx-tools/
+tools/_probe_*.py
+
+# Misc
+NUL
+.DS_Store
+.claude/plans/myagents/
+src-tauri/nul
+
+# Local screenshots and ad-hoc captures (application icons under src-tauri/icons/ stay tracked)
+/*.png

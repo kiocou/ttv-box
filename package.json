@@ -1,0 +1,24 @@
+{
+  "name": "ttv-cinema-frontend",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite 前端 --host :: --port 5173 --strictPort",
+    "build": "vite build 前端 --outDir ../dist --emptyOutDir",
+    "preview": "vite preview --host 127.0.0.1 --port 4173 --strictPort",
+    "tauri:dev": "tauri dev",
+    "tauri:build": "tauri build"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.11.4",
+    "vite": "^7.3.6"
+  },
+  "dependencies": {
+    "@tauri-apps/api": "^2.11.1",
+    "dashjs": "^5.2.1",
+    "hls.js": "^1.7.1",
+    "qrcode": "^1.5.4",
+    "sharp": "^0.35.4"
+  }
+}

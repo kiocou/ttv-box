@@ -1,0 +1,17 @@
+{
+	"nodes":[
+		{"id":"da146a546e6b0a93","x":-160,"y":-380,"width":250,"height":70,"color":"3","type":"text","text":"#[ **光鸭云盘**](https://www.guangyapan.com/)"},
+		{"id":"f8d0e503093495b2","x":-480,"y":-240,"width":93,"height":50,"type":"text","text":"登入"},
+		{"id":"3b2ddef9e69bf14c","x":-772,"y":80,"width":161,"height":60,"type":"text","text":"短信验证码登入"},
+		{"id":"b3a2b561d6596774","x":-511,"y":80,"width":155,"height":60,"type":"text","text":"网页抓取token"},
+		{"id":"dd5cf1d97c7dc091","x":-991,"y":80,"width":118,"height":50,"type":"text","text":"扫码登入"},
+		{"id":"92739bd412d51710","x":-144,"y":-131,"width":250,"height":60,"type":"text","text":"获取文件"}
+	],
+	"edges":[
+		{"id":"8e85051b259f86f0","fromNode":"f8d0e503093495b2","fromSide":"bottom","toNode":"dd5cf1d97c7dc091","toSide":"top"},
+		{"id":"fedcaf017851110e","fromNode":"f8d0e503093495b2","fromSide":"bottom","toNode":"3b2ddef9e69bf14c","toSide":"top"},
+		{"id":"e9351f1d398327ed","fromNode":"f8d0e503093495b2","fromSide":"bottom","toNode":"b3a2b561d6596774","toSide":"top"},
+		{"id":"6cb59b1f22f01f29","fromNode":"da146a546e6b0a93","fromSide":"bottom","toNode":"f8d0e503093495b2","toSide":"top"},
+		{"id":"1de56a3777a43acd","fromNode":"da146a546e6b0a93","fromSide":"bottom","toNode":"92739bd412d51710","toSide":"top"}
+	]
+}

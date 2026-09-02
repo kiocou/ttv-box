@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TTV 需求确认问卷</title>
+  <style>
+    :root { --bg:#f5f7fb; --panel:#ffffff; --ink:#182230; --muted:#667085; --line:#e2e7ef; --blue:#1f6feb; --blue-soft:#eaf2ff; --green:#16805b; --shadow:0 12px 35px rgba(25,45,80,.08); }
+    * { box-sizing:border-box; }
+    body { margin:0; color:var(--ink); background:var(--bg); font:15px/1.65 "Microsoft YaHei", "Segoe UI", sans-serif; }
+    button, input, textarea { font:inherit; }
+    button { cursor:pointer; }
+    .app { display:grid; grid-template-columns:280px minmax(0,1fr); min-height:100vh; }
+    aside { position:sticky; top:0; height:100vh; padding:26px 20px; background:#101b2d; color:#dce7f6; overflow:auto; }
+    .brand { padding:0 10px 24px; border-bottom:1px solid rgba(255,255,255,.12); }
+    .brand small { display:block; color:#8ea4c0; letter-spacing:.08em; text-transform:uppercase; font-size:11px; }
+    .brand h1 { margin:6px 0 0; font-size:23px; letter-spacing:.02em; }
+    .progress-wrap { margin:22px 10px; padding:14px; border:1px solid rgba(255,255,255,.14); border-radius:10px; background:rgba(255,255,255,.05); }
+    .progress-line { display:flex; justify-content:space-between; gap:12px; font-size:12px; color:#9eb1cb; }
+    .progress-line strong { color:#fff; }
+    .bar { height:6px; margin-top:10px; border-radius:20px; background:#263752; overflow:hidden; }
+    .bar i { display:block; height:100%; width:0; background:#6db3ff; transition:width .2s ease; }
+    nav { display:grid; gap:5px; margin-top:20px; }
+    nav button { width:100%; padding:10px 12px; border:0; border-radius:8px; text-align:left; color:#aebdd1; background:transparent; }
+    nav button:hover, nav button.active { color:#fff; background:#1d3556; }
+    nav button .count { float:right; color:#7890ad; font-size:12px; }
+    main { width:min(1180px,100%); margin:0 auto; padding:34px 38px 70px; }
+    .topbar { display:flex; justify-content:space-between; align-items:flex-start; gap:20px; margin-bottom:26px; }
+    .eyebrow { margin:0 0 5px; color:var(--blue); font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; }
+    h2 { margin:0; font-size:32px; line-height:1.2; letter-spacing:-.02em; }
+    .subtitle { max-width:760px; margin:12px 0 0; color:var(--muted); }
+    .actions { display:flex; flex-wrap:wrap; gap:8px; justify-content:flex-end; }
+    .btn { min-height:38px; padding:0 13px; border:1px solid var(--line); border-radius:8px; color:var(--ink); background:#fff; box-shadow:0 2px 5px rgba(20,30,50,.03); }
+    .btn:hover { border-color:#a9bad1; background:#fbfdff; }
+    .btn.primary { border-color:var(--blue); color:#fff; background:var(--blue); }
+    .btn.danger { color:#b42318; }
+    .status { display:flex; align-items:center; gap:8px; margin:10px 0 28px; color:var(--muted); font-size:13px; }
+    .status::before { content:""; width:8px; height:8px; border-radius:50%; background:var(--green); }
+    .baseline { display:grid; grid-template-columns:1.35fr 1fr; gap:18px; margin-bottom:30px; }
+    .panel { padding:22px; border:1px solid var(--line); border-radius:10px; background:var(--panel); box-shadow:var(--shadow); }
+    .panel h3 { margin:0 0 10px; font-size:17px; }
+    .panel p { margin:8px 0; color:var(--muted); }
+    .facts { display:grid; gap:9px; margin:0; padding:0; list-style:none; }
+    .facts li { display:flex; gap:10px; color:var(--muted); }
+    .facts li::before { content:""; flex:0 0 7px; height:7px; margin-top:9px; border-radius:50%; background:#6daef8; }
+    .section { scroll-margin-top:22px; margin:34px 0 46px; }
+    .section-head { display:flex; justify-content:space-between; gap:20px; align-items:end; margin-bottom:14px; }
+    .section-head h3 { margin:0; font-size:22px; }
+    .section-head p { margin:0; color:var(--muted); font-size:13px; }
+    .questions { display:grid; gap:13px; }
+    .question { padding:18px 20px 20px; border:1px solid var(--line); border-radius:9px; background:#fff; box-shadow:0 6px 18px rgba(25,45,80,.04); }
+    .question.complete { border-color:#9dd9c2; background:#fbfffd; }
+    .q-head { display:flex; gap:12px; align-items:flex-start; }
+    .q-num { flex:0 0 30px; height:30px; display:grid; place-items:center; border-radius:7px; color:#255ba4; background:var(--blue-soft); font-weight:700; font-size:13px; }
+    .q-title { margin:1px 0 0; font-size:16px; font-weight:700; }
+    .q-ask { margin:10px 0 12px 42px; color:#2f3c4e; }
+    .evidence { margin:0 0 14px 42px; padding:10px 12px; border-left:3px solid #bfd5f7; color:#667085; background:#f8faff; font-size:13px; }
+    .answer { margin-left:42px; }
+    textarea { display:block; width:100%; min-height:86px; padding:10px 11px; resize:vertical; border:1px solid #cdd6e2; border-radius:7px; outline:none; color:var(--ink); background:#fff; }
+    textarea:focus, input:focus { border-color:var(--blue); box-shadow:0 0 0 3px rgba(31,111,235,.12); }
+    .choices { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:8px; }
+    .choice { display:flex; gap:8px; align-items:flex-start; padding:9px 10px; border:1px solid #d9e0ea; border-radius:7px; color:#475467; background:#fff; }
+    .choice:has(input:checked) { border-color:#8bb9fa; color:#174b8e; background:#f3f8ff; }
+    .choice input { margin-top:4px; accent-color:var(--blue); }
+    .choice-input { margin-top:8px; }
+    .choice-input input { width:100%; padding:9px 10px; border:1px solid #d9e0ea; border-radius:7px; }
+    .section-footer { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-top:16px; color:var(--muted); font-size:13px; }
+    .toast { position:fixed; right:22px; bottom:22px; padding:10px 13px; border:1px solid #b7e0cf; border-radius:8px; color:#126044; background:#effcf5; box-shadow:var(--shadow); opacity:0; transform:translateY(10px); pointer-events:none; transition:.2s ease; }
+    .toast.show { opacity:1; transform:translateY(0); }
+    @media (max-width:900px) { .app { display:block; } aside { position:relative; height:auto; padding:18px; } nav { display:flex; gap:6px; overflow:auto; padding-bottom:2px; } nav button { min-width:max-content; } .progress-wrap { margin:16px 0; } main { padding:24px 16px 54px; } .topbar { display:block; } .actions { justify-content:flex-start; margin-top:18px; } .baseline { grid-template-columns:1fr; } }
+    @media print { aside, .actions, .status { display:none !important; } main { width:100%; padding:0; } .panel, .question { box-shadow:none; break-inside:avoid; } body { background:#fff; } }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside>
+      <div class="brand"><small>TTV PRODUCT WORKSHOP</small><h1>需求确认问卷</h1></div>
+      <div class="progress-wrap"><div class="progress-line"><span>已完成</span><strong id="progressText">0 / 0</strong></div><div class="bar"><i id="progressBar"></i></div></div>
+      <nav id="sectionNav" aria-label="问卷分组导航"></nav>
+    </aside>
+    <main>
+      <div class="topbar">
+        <div><p class="eyebrow">TTV v1.0 → v3.0</p><h2>把后续方向定下来</h2><p class="subtitle">基于 LumiPlayer 聊天记录和逆向报告整理。先回答产品边界，再决定技术实现，避免把逆向推断直接变成未经确认的需求。</p></div>
+        <div class="actions"><button class="btn" id="exportBtn">↓ 导出回答</button><button class="btn" id="printBtn">打印 / PDF</button><button class="btn danger" id="resetBtn">清空回答</button></div>
+      </div>
+      <div class="status" id="saveStatus">回答会自动保存在当前浏览器</div>
+      <section class="baseline">
+        <div class="panel"><h3>目前已确认</h3><p>目标是构建 TTV，一个以 Tauri + Rust + libmpv 为核心的桌面媒体客户端。</p><ul class="facts"><li>原产品是 Rust/Tauri、StreamHub 本地服务、Lumi Cloud 远端服务三轨架构。</li><li>逆向已确认播放、媒体库、Provider、字幕、元数据、更新和插件等模块。</li><li>首版建议先做本地播放、媒体库、播放进度和可扩展 Provider 接口。</li></ul></div>
+        <div class="panel"><h3>当前关键未决项</h3><ul class="facts"><li>v1.0 的产品定位、平台和范围</li><li>libmpv 集成及 UI/窗口方案</li><li>Provider 优先级与登录方式</li><li>账号、License 和离线策略</li><li>AI、增强、更新和发布节奏</li></ul></div>
+      </section>
+      <div id="formRoot"></div>
+    </main>
+  </div>
+  <div class="toast" id="toast" role="status"></div>
+  <script>
+    const sections = [
+      { id:'scope', title:'产品目标与范围', intro:'先锁定产品定位、平台、版本和兼容目标。', questions:[
+        ['产品定位','TTV 首个可发布版本的定位是什么？','[ ] 个人自用播放器  [ ] 开源 LumiPlayer 类似产品  [ ] 商业化桌面客户端  [ ] 内部工具  [ ] 其他：'],
+        ['目标平台','首发平台和最低支持版本是什么？','默认 Windows 10/11 x64；是否需要 macOS、Linux、ARM 或 Steam Deck？'],
+        ['版本边界','本轮希望直接做到哪个版本范围？','建议先锁定 v1.0 播放核心，再拆 v1.5/v2.0/v2.5/v3.0。'],
+        ['兼容目标','与 LumiPlayer 的兼容程度到什么层级？','[ ] 功能等价  [ ] UI 相似  [ ] 数据可迁移  [ ] 配置可迁移  [ ] 协议兼容  [ ] 仅实现同类能力'],
+        ['发布方式','首个版本如何交付和更新？','[ ] 单机压缩包  [ ] 安装程序  [ ] MSIX  [ ] GitHub Release  [ ] 自建更新服务器  [ ] 仅源码构建']
+      ]},
+      { id:'player', title:'TTV v1.0 播放核心', intro:'确认播放引擎、渲染、音视频能力和失败降级策略。', questions:[
+        ['播放器内核','是否确认采用 libmpv.dll 动态链接？','推荐 Rust FFI 封装 libmpv，外置 mpv-2.dll 和依赖，便于升级排错。'],
+        ['渲染方式','播放器采用哪种窗口方式？','[ ] WebView2 内嵌  [ ] 独立播放窗口  [ ] Tauri child window  [ ] 先独立窗口后嵌入'],
+        ['视频能力','v1.0 必须支持哪些视频能力？','[ ] 本地文件  [ ] HTTP 直链  [ ] HLS  [ ] DASH  [ ] HDR  [ ] 硬件解码  [ ] 倍速  [ ] 截图  [ ] 画中画'],
+        ['音频能力','音轨和音频输出需要做到什么程度？','[ ] 单音轨  [ ] 多音轨切换  [ ] 音量/增益  [ ] WASAPI 独占  [ ] 5.1/7.1  [ ] 音频延迟'],
+        ['字幕能力','字幕在 v1.0 需要哪些功能？','[ ] 外挂字幕  [ ] 内嵌字幕  [ ] 字幕切换  [ ] 字体/大小/位置  [ ] 字幕延迟  [ ] 在线下载  [ ] OpenSubtitles'],
+        ['播放状态','播放记录需要保存哪些字段？','建议：媒体 ID、位置、总时长、完成比例、最近播放时间、音轨、字幕轨、播放速度。'],
+        ['播放失败','直链失效、403、超时、格式不支持时，期望怎样降级？','建议：重试 → 刷新 Provider → HLS/转码代理 → 外部播放器 → 明确错误。'],
+        ['外部播放器','是否保留 mpv、PotPlayer、VLC、MPC-HC/BE 等外部播放器唤起？','逆向报告确认原产品有播放器探测逻辑；需要明确首版是否实现。']
+      ]},
+      { id:'library', title:'媒体库与数据模型', intro:'确定来源、扫描、命名、元数据和迁移边界。', questions:[
+        ['媒体库来源','v1.0 媒体库先支持哪些来源？','[ ] 本地目录  [ ] NAS/SMB  [ ] WebDAV  [ ] Emby  [ ] Jellyfin  [ ] Plex  [ ] 云盘'],
+        ['扫描方式','媒体库扫描采用自动监控还是手动扫描？','[ ] 启动扫描  [ ] 定时扫描  [ ] 文件系统监听  [ ] 手动扫描  [ ] 增量扫描'],
+        ['媒体类型','首版支持哪些媒体类型？','[ ] 电影  [ ] 电视剧  [ ] 动漫  [ ] 纪录片  [ ] 演唱会  [ ] 综艺  [ ] 音乐  [ ] 直播'],
+        ['命名规则','是否兼容 Jellyfin/Emby/TMDB 常见命名规则？','建议支持 Movie (Year)、S01E01、分辨率、音轨、字幕语言等常见信息提取。'],
+        ['元数据来源','元数据优先使用哪些服务？','[ ] TMDB  [ ] MDBList  [ ] Emby/Jellyfin 自带  [ ] 本地 NFO  [ ] 自建服务  [ ] 不做自动刮削'],
+        ['数据库','TTV 使用独立 SQLite，还是必须兼容现有 StreamHub/lumi-store.db？','建议使用自己的 schema，并提供导入/迁移工具。'],
+        ['数据迁移','需要从哪些现有数据迁移？','[ ] 播放历史  [ ] 媒体库  [ ] 账号  [ ] 云盘配置  [ ] 播放器设置  [ ] 不需要迁移']
+      ]},
+      { id:'providers', title:'Provider 与媒体源聚合', intro:'确定云盘、媒体服务器和直链解析的第一批范围。', questions:[
+        ['Provider 范围','v1.0 要接哪些 Provider？请按优先级排序。','已发现百度、阿里、夸克、115、天翼、光鸭、飞牛，以及 Emby/Jellyfin/Plex。'],
+        ['登录方式','云盘登录是否必须二维码 OAuth？','各家均有二维码登录/轮询；也可先支持已有账号 token 导入。'],
+        ['凭据存储','云盘 token 和媒体服务器凭据采用什么存储策略？','建议统一使用 Windows Credential Manager/DPAPI，禁止明文 token 落盘。'],
+        ['Provider 接口','Provider 是否统一抽象为可插拔接口？','建议统一 login、refresh、list、search、resolve、headers、subtitle、capabilities。'],
+        ['直链解析','解析失败时是否允许使用自建后端或代理？','建议 endpoint 可配置、默认 HTTPS，并支持本地直连优先。'],
+        ['媒体服务器','Emby/Jellyfin/Plex 首版需要支持哪些操作？','[ ] 登录/保存服务器  [ ] 浏览库  [ ] PlaybackInfo  [ ] 直链播放  [ ] 转码  [ ] 播放进度回写  [ ] 字幕']
+      ]},
+      { id:'ui', title:'UI 与交互', intro:'确定首页、导航、播放页和视觉方向。', questions:[
+        ['首页结构','首页首屏要展示哪些内容？','建议：继续观看、最近添加、最近播放、收藏、媒体源入口、搜索。'],
+        ['导航结构','采用侧边栏、顶部导航还是双栏布局？','[ ] 侧边栏  [ ] 顶部导航  [ ] macOS 风格侧栏  [ ] 你提供截图后复刻'],
+        ['播放页','播放页是否需要独立路由/独立窗口？','请明确控制条、播放列表、字幕、音轨、清晰度等是否存在。'],
+        ['主题','主题和视觉风格是什么？','[ ] 深色影院  [ ] 浅色简洁  [ ] 跟随系统  [ ] 自定义品牌色：'],
+        ['参考资料','你能提供哪些 UI 参考资料？','[ ] LumiPlayer 截图  [ ] 操作录屏  [ ] 页面清单  [ ] TTV 草图  [ ] 暂无']
+      ]},
+      { id:'ai', title:'AI、增强与插件', intro:'把 AI、RIFE、超分、RAG 和插件能力放入正确版本。', questions:[
+        ['AI 范围','AI 搜索、推荐、Agent 在哪个版本实现？','逆向报告显示 RAG 配置存在但未接线；建议放到 v2.0。'],
+        ['AI 服务','AI 使用云端 API、局域网模型还是本地模型？','[ ] OpenAI 兼容 API  [ ] Ollama  [ ] LM Studio  [ ] 自建服务  [ ] 暂不确定'],
+        ['视频增强','VapourSynth、RIFE、超分、锐化、HDR 是否属于首版范围？','建议先实现可插拔管线，关闭时零开销。'],
+        ['插件体系','是否需要第三方插件 API，还是只保留视频滤镜插件？','当前只确认 VapourSynth 插件体系，未确认通用插件市场。']
+      ]},
+      { id:'security', title:'账号、License 与安全', intro:'确定账号、授权、离线、设备绑定和敏感数据边界。', questions:[
+        ['账号体系','TTV 是否需要自建账号系统？','[ ] 单机无账号  [ ] 本地账号  [ ] 云端账号  [ ] 邮箱验证  [ ] 社交登录'],
+        ['License 模式','授权采用什么模式？','[ ] 完全免费  [ ] 本地 License 文件  [ ] 在线激活  [ ] 订阅  [ ] 设备数限制  [ ] 永久授权'],
+        ['离线能力','离线状态下允许使用哪些功能、持续多久？','逆向目标是离线文件 + 在线激活混合模型；需要明确 TTV 策略。'],
+        ['设备绑定','是否绑定设备？绑定哪些标识？','建议使用可撤销设备记录，不设计成不可迁移的永久锁。'],
+        ['敏感数据','哪些数据禁止上传或写入日志？','建议明确 token、密码、设备指纹、媒体路径、播放历史、AI 对话的日志策略。']
+      ]},
+      { id:'ops', title:'更新、部署与运维', intro:'确认更新包、服务器、回滚和运行依赖。', questions:[
+        ['更新策略','更新是全量包、差分包还是运行时资源分包？','原产品使用 version.json + SHA-256 + _up_ 运行时暂存目录。'],
+        ['更新服务器','是否已有域名、对象存储、CDN 和版本清单服务？','没有的话，首版可用静态 JSON + HTTPS 文件下载。'],
+        ['回滚','更新失败时是否必须自动回滚？','建议保留上一版本目录、校验包 hash、失败后恢复。'],
+        ['运行依赖','是否允许依赖系统 Java 21？','原 StreamHub 依赖 Temurin 21；也可内置 JRE 或改用 Rust/Go 服务。']
+      ]},
+      { id:'delivery', title:'工程组织与验收', intro:'确定仓库组织、技术栈、验收、性能和第一批样本。', questions:[
+        ['仓库结构','采用单仓库还是前后端分仓？','[ ] Tauri 单仓库  [ ] Rust/前端/服务三目录  [ ] 独立仓库  [ ] 已有模板：'],
+        ['技术栈','是否确认 Tauri + Rust + TypeScript/React？','新项目建议 TypeScript + React/Svelte 降低维护成本。'],
+        ['测试标准','首版必须通过哪些验收？','[ ] 单元测试  [ ] 集成测试  [ ] 播放样本集  [ ] 断网测试  [ ] 4K/HDR  [ ] 长时间稳定性'],
+        ['性能目标','请给出启动、扫描、播放和内存目标。','填写冷启动秒数、首帧时间、4K CPU/GPU、空闲内存、库扫描速度。'],
+        ['第一批样本','请提供用于验收的媒体和环境样本。','建议：本地电影、电视剧目录、多音轨/字幕文件、HLS 地址、Emby/Jellyfin 测试环境或 mock 服务。']
+      ]}
+    ];
+    const storageKey = 'ttv-questionnaire-v1';
+    const formRoot = document.getElementById('formRoot');
+    const nav = document.getElementById('sectionNav');
+    const state = JSON.parse(localStorage.getItem(storageKey) || '{}');
+    let qIndex = 0;
+    function parseChoices(text) { return /\[ \]/.test(text); }
+    function choiceLabels(text) { return text.match(/\[ \][^\[]+/g)?.map(x => x.replace(/^\[ \]\s*/, '').trim()) || []; }
+    function render() {
+      formRoot.innerHTML = ''; nav.innerHTML = ''; qIndex = 0;
+      sections.forEach(section => {
+        const s = document.createElement('section'); s.className = 'section'; s.id = section.id;
+        const head = document.createElement('div'); head.className = 'section-head'; head.innerHTML = `<div><h3>${section.title}</h3><p>${section.intro}</p></div><p class="section-progress" data-section="${section.id}"></p>`; s.appendChild(head);
+        const questions = document.createElement('div'); questions.className = 'questions';
+        section.questions.forEach(([title, ask, evidence]) => {
+          qIndex += 1; const id = `${section.id}-${qIndex}`; const card = document.createElement('article'); card.className = 'question'; card.dataset.id = id;
+          card.innerHTML = `<div class="q-head"><span class="q-num">${qIndex}</span><div class="q-title">${title}</div></div><div class="q-ask">${ask}</div><div class="evidence">${evidence}</div><div class="answer"></div>`;
+          const answer = card.querySelector('.answer');
+          if (parseChoices(evidence) || parseChoices(ask)) {
+            const labels = choiceLabels(evidence).length ? choiceLabels(evidence) : choiceLabels(ask);
+            const wrap = document.createElement('div'); wrap.className = 'choices';
+            labels.forEach(label => { const lab = document.createElement('label'); lab.className = 'choice'; lab.innerHTML = `<input type="checkbox" value="${escapeHtml(label)}"> <span>${escapeHtml(label)}</span>`; wrap.appendChild(lab); });
+            answer.appendChild(wrap);
+            const other = document.createElement('input'); other.className = 'choice-input'; other.placeholder = '补充说明 / 其他选项'; other.type = 'text'; answer.appendChild(other);
+          } else { const ta = document.createElement('textarea'); ta.placeholder = '填写你的回答、取舍或待定原因…'; answer.appendChild(ta); }
+          questions.appendChild(card); bindCard(card);
+        });
+        s.appendChild(questions); const footer = document.createElement('div'); footer.className = 'section-footer'; footer.innerHTML = `<span>本组回答会自动保存</span><button class="btn" type="button" data-next="${section.id}">下一组 →</button>`; s.appendChild(footer); formRoot.appendChild(s);
+        const n = document.createElement('button'); n.type = 'button'; n.innerHTML = `${section.title}<span class="count" data-nav-count="${section.id}">0/${section.questions.length}</span>`; n.dataset.target = section.id; n.addEventListener('click', () => document.getElementById(section.id).scrollIntoView({ behavior:'smooth' })); nav.appendChild(n);
+      });
+      document.querySelectorAll('[data-next]').forEach(btn => btn.addEventListener('click', () => { const i = sections.findIndex(x => x.id === btn.dataset.next); document.getElementById(sections[Math.min(i+1, sections.length-1)].id).scrollIntoView({ behavior:'smooth' }); }));
+      update();
+    }
+    function bindCard(card) { const id = card.dataset.id; const saved = state[id] || {}; card.querySelectorAll('input[type=checkbox]').forEach(input => { input.checked = (saved.choices || []).includes(input.value); input.addEventListener('change', () => saveCard(card)); }); const text = card.querySelector('textarea'); if (text) { text.value = saved.text || ''; text.addEventListener('input', () => saveCard(card)); } const other = card.querySelector('.choice-input'); if (other) { other.value = saved.other || ''; other.addEventListener('input', () => saveCard(card)); } }
+    function saveCard(card) { const choices = [...card.querySelectorAll('input[type=checkbox]:checked')].map(x => x.value); const text = card.querySelector('textarea')?.value || ''; const other = card.querySelector('.choice-input')?.value || ''; state[card.dataset.id] = { choices, text, other }; localStorage.setItem(storageKey, JSON.stringify(state)); update(); document.getElementById('saveStatus').textContent = `已自动保存 · ${new Date().toLocaleTimeString('zh-CN', { hour:'2-digit', minute:'2-digit' })}`; }
+    function update() { const cards = [...document.querySelectorAll('.question')]; const done = cards.filter(card => { const s = state[card.dataset.id]; return s && ((s.text || '').trim() || (s.choices || []).length || (s.other || '').trim()); }); document.getElementById('progressText').textContent = `${done.length} / ${cards.length}`; document.getElementById('progressBar').style.width = `${cards.length ? done.length / cards.length * 100 : 0}%`; sections.forEach(section => { const cards = [...document.querySelectorAll(`#${section.id} .question`)]; const count = cards.filter(card => { const s = state[card.dataset.id]; return s && ((s.text || '').trim() || (s.choices || []).length || (s.other || '').trim()); }).length; document.querySelector(`[data-section="${section.id}"]`).textContent = `${count} / ${cards.length} 已完成`; document.querySelector(`[data-nav-count="${section.id}"]`).textContent = `${count}/${cards.length}`; }); document.querySelectorAll('.question').forEach(card => card.classList.toggle('complete', done.includes(card))); }
+    function escapeHtml(value) { return value.replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#039;' }[c])); }
+    document.getElementById('exportBtn').addEventListener('click', () => { const payload = { exportedAt: new Date().toISOString(), sections, answers: state }; const blob = new Blob([JSON.stringify(payload, null, 2)], { type:'application/json' }); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'ttv-需求回答.json'; a.click(); URL.revokeObjectURL(a.href); });
+    document.getElementById('printBtn').addEventListener('click', () => window.print());
+    document.getElementById('resetBtn').addEventListener('click', () => { if (confirm('确定清空当前浏览器中的全部回答吗？')) { localStorage.removeItem(storageKey); Object.keys(state).forEach(k => delete state[k]); render(); document.getElementById('saveStatus').textContent = '已清空，回答会自动保存在当前浏览器'; } });
+    render();
+  </script>
+</body>
+</html>

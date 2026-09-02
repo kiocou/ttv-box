@@ -1,0 +1,417 @@
+<!DOCTYPE html><html class="dark" lang="zh-CN" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>TTV Cinema - 智能媒体库</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                "background": "#111318",
+                "surface": "#111318",
+                "inverse-on-surface": "#2f3035",
+                "on-secondary-fixed-variant": "#653e00",
+                "rating-gold": "#f59e0b",
+                "tertiary": "#56e5a9",
+                "primary-fixed": "#c4e7ff",
+                "on-primary-fixed-variant": "#004c69",
+                "on-surface-variant": "#bdc8d1",
+                "tertiary-fixed-dim": "#4edea3",
+                "inverse-surface": "#e2e2e8",
+                "on-primary-container": "#004965",
+                "on-background": "#e2e2e8",
+                "on-primary": "#00354a",
+                "secondary-fixed": "#ffddb8",
+                "primary-fixed-dim": "#7bd0ff",
+                "tertiary-fixed": "#6ffbbe",
+                "secondary": "#ffb95f",
+                "surface-bright": "#37393e",
+                "on-tertiary-fixed-variant": "#005236",
+                "surface-container-low": "#1a1c20",
+                "on-secondary-fixed": "#2a1700",
+                "secondary-fixed-dim": "#ffb95f",
+                "on-tertiary-container": "#004e34",
+                "on-secondary-container": "#5b3800",
+                "outline": "#87929a",
+                "inverse-primary": "#00668a",
+                "surface-tint": "#7bd0ff",
+                "primary-container": "#38bdf8",
+                "on-primary-fixed": "#001e2c",
+                "tertiary-container": "#30c88f",
+                "error": "#ffb4ab",
+                "surface-container-highest": "#333539",
+                "error-container": "#93000a",
+                "glass-surface": "rgba(10, 12, 16, 0.85)",
+                "surface-container": "#1e2024",
+                "on-error": "#690005",
+                "on-error-container": "#ffdad6",
+                "surface-container-high": "#282a2e",
+                "surface-container-lowest": "#0c0e12",
+                "surface-dim": "#111318",
+                "on-tertiary-fixed": "#002113",
+                "on-secondary": "#472a00",
+                "primary": "#8ed5ff",
+                "secondary-container": "#ee9800",
+                "surface-variant": "#333539",
+                "outline-variant": "#3e484f",
+                "obsidian-base": "#0a0c10",
+                "on-surface": "#e2e2e8",
+                "on-tertiary": "#003824",
+                "tech-cyan": "#38bdf8",
+                "status-green": "#10b981"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "margin-desktop": "48px",
+                      "margin-mobile": "16px",
+                      "unit": "4px",
+                      "gutter": "24px",
+                      "ratio-media": "2/3"
+              },
+              "fontFamily": {
+                      "headline-md": [
+                              "Plus Jakarta Sans"
+                      ],
+                      "display-lg": [
+                              "Plus Jakarta Sans"
+                      ],
+                      "body-md": [
+                              "Plus Jakarta Sans"
+                      ],
+                      "body-lg": [
+                              "Plus Jakarta Sans"
+                      ],
+                      "headline-lg": [
+                              "Plus Jakarta Sans"
+                      ],
+                      "metric-md": [
+                              "JetBrains Mono"
+                      ],
+                      "metric-sm": [
+                              "JetBrains Mono"
+                      ],
+                      "headline-lg-mobile": [
+                              "Plus Jakarta Sans"
+                      ]
+              },
+              "fontSize": {
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "display-lg": [
+                              "48px",
+                              {
+                                      "lineHeight": "56px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "metric-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "letterSpacing": "0.02em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "metric-sm": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "headline-lg-mobile": [
+                              "28px",
+                              {
+                                      "lineHeight": "36px",
+                                      "fontWeight": "700"
+                              }
+                      ]
+              }
+            },
+          }
+        }
+      </script>
+<style type="text/tailwindcss">
+        @layer utilities {
+          .glass-panel {
+            @apply bg-glass-surface backdrop-blur-3xl border border-white/10;
+          }
+          .glow-hover {
+            @apply hover:drop-shadow-[0_0_20px_rgba(56,189,248,0.3)] transition-all duration-300 hover:scale-105;
+          }
+        }
+      </style>
+</head>
+<body class="bg-obsidian-base text-on-surface font-body-md text-body-md min-h-screen flex flex-col overflow-x-hidden selection:bg-tech-cyan/30 selection:text-tech-cyan">
+<!-- TopNavBar -->
+<nav class="fixed top-0 left-0 w-full z-50 flex justify-center items-center pointer-events-none px-margin-mobile md:px-margin-desktop mt-6">
+<div class="glass-panel rounded-full mx-auto w-fit px-2 py-1.5 flex items-center gap-1 pointer-events-auto shadow-[0_0_30px_rgba(0,0,0,0.5)]">
+<!-- Brand -->
+<div class="px-5 py-2 font-headline-md text-headline-md font-bold text-tech-cyan tracking-tight shrink-0">
+      TTV Cinema
+    </div>
+<!-- Navigation Links -->
+<div class="hidden md:flex items-center gap-1">
+<a class="px-5 py-2 rounded-full text-sm font-medium text-on-surface-variant hover:text-on-surface transition-colors" href="#">首页</a>
+<a class="px-5 py-2 rounded-full text-sm font-medium text-white bg-white/10 transition-colors" href="#">媒体库</a>
+<a class="px-5 py-2 rounded-full text-sm font-medium text-on-surface-variant hover:text-on-surface transition-colors" href="#">云端盘</a>
+<a class="px-5 py-2 rounded-full text-sm font-medium text-on-surface-variant hover:text-on-surface transition-colors" href="#">收藏</a>
+<a class="px-5 py-2 rounded-full text-sm font-medium text-on-surface-variant hover:text-on-surface transition-colors" href="#">设置</a>
+</div>
+<!-- Trailing Actions -->
+<div class="ml-2 pl-2 border-l border-white/10 flex items-center gap-2 pr-2">
+<button class="w-9 h-9 rounded-full flex items-center justify-center text-on-surface-variant hover:text-tech-cyan hover:bg-white/5 transition-all">
+<span class="material-symbols-outlined">search</span>
+</button>
+<button class="w-9 h-9 rounded-full flex items-center justify-center text-tech-cyan hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-[28px]">account_circle</span>
+</button>
+</div>
+</div>
+</nav>
+<div class="flex-1 flex max-w-[1440px] w-full mx-auto pt-32 pb-margin-desktop px-margin-mobile md:px-margin-desktop gap-gutter relative z-10">
+<!-- SideNavBar -->
+<aside class="hidden lg:flex fixed left-0 top-[100px] flex-col p-4 z-40 glass-panel rounded-xl h-[calc(100vh-120px)] w-64 ml-margin-desktop my-auto">
+<div class="mb-8 px-4">
+<div class="flex items-center gap-3 mb-2">
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center border border-white/10">
+<span class="material-symbols-outlined text-tech-cyan" data-icon="dns">dns</span>
+</div>
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface text-sm">来源</h2>
+<p class="font-metric-sm text-metric-sm text-on-surface-variant">7.2 TB 可用</p>
+</div>
+</div>
+</div>
+<nav class="flex-1 flex flex-col gap-2">
+<a class="flex items-center gap-3 px-4 py-3 text-tech-cyan bg-primary-container/20 rounded-lg border-l-2 border-tech-cyan scale-[0.98] transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="database" data-weight="fill" style="font-variation-settings: 'FILL' 1;">database</span>
+<span class="font-body-md text-body-md font-medium">本地存储</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-colors duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="dns">dns</span>
+<span class="font-body-md text-body-md">网络 NAS</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-colors duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="cloud_download">cloud_download</span>
+<span class="font-body-md text-body-md">远程种子盒</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-colors duration-200 rounded-lg mt-auto mb-2" href="#">
+<span class="material-symbols-outlined" data-icon="delete">delete</span>
+<span class="font-body-md text-body-md">回收站</span>
+</a>
+</nav>
+<button class="w-full py-3 rounded-full bg-surface-container border border-white/10 text-on-surface hover:text-tech-cyan hover:border-tech-cyan/50 transition-all font-body-md text-body-md flex items-center justify-center gap-2 mb-4">
+<span class="material-symbols-outlined text-sm" data-icon="add">add</span>
+                添加来源
+            </button>
+<div class="pt-4 border-t border-white/10">
+<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-colors duration-200 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="monitoring">monitoring</span>
+<span class="font-body-md text-body-md text-sm">硬件日志</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 lg:ml-72 flex flex-col gap-6">
+<!-- Toolbar -->
+<div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 glass-panel p-4 rounded-xl">
+<div class="flex items-center gap-2 overflow-x-auto pb-2 sm:pb-0 w-full sm:w-auto scrollbar-hide">
+<button class="px-5 py-2 rounded-full bg-tech-cyan text-obsidian-base font-body-md text-body-md font-medium whitespace-nowrap transition-transform hover:scale-105 shadow-[0_0_15px_rgba(56,189,248,0.2)]">全部 (All)</button>
+<button class="px-5 py-2 rounded-full border border-white/10 text-on-surface-variant hover:text-on-surface hover:bg-white/5 font-body-md text-body-md transition-all whitespace-nowrap">电影 (Movies)</button>
+<button class="px-5 py-2 rounded-full border border-white/10 text-on-surface-variant hover:text-on-surface hover:bg-white/5 font-body-md text-body-md transition-all whitespace-nowrap">剧集 (TV)</button>
+<button class="px-5 py-2 rounded-full border border-white/10 text-on-surface-variant hover:text-on-surface hover:bg-white/5 font-body-md text-body-md transition-all whitespace-nowrap">动漫 (Anime)</button>
+</div>
+<div class="flex items-center gap-3 w-full sm:w-auto">
+<div class="relative w-full sm:w-auto">
+<select class="w-full sm:w-auto appearance-none bg-surface-container-low border border-white/10 rounded-full pl-4 pr-10 py-2 text-on-surface-variant font-body-md text-body-md focus:outline-none focus:border-tech-cyan focus:ring-1 focus:ring-tech-cyan transition-colors">
+<option>年份 (Year) ↓</option>
+<option>年份 (Year) ↑</option>
+<option>评分 (Rating) ↓</option>
+<option>评分 (Rating) ↑</option>
+<option>最近添加 (Added) ↓</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none" data-icon="expand_more">expand_more</span>
+</div>
+<button class="p-2 rounded-full border border-white/10 text-on-surface-variant hover:text-tech-cyan transition-colors">
+<span class="material-symbols-outlined" data-icon="grid_view">grid_view</span>
+</button>
+</div>
+</div>
+<!-- Media Grid -->
+<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
+<!-- Media Card 1 -->
+<div class="group relative aspect-[2/3] rounded-lg overflow-hidden glass-panel cursor-pointer glow-hover">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="A highly detailed, cinematic movie poster featuring a futuristic sci-fi city illuminated by neon cyan and magenta lights in a dark, moody cyberpunk aesthetic. The scene shows a lone figure looking up at towering skyscrapers under a rainy night sky. High contrast, photorealistic styling." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCYH5eY_VlaWBqewLCKQm7J6_gjLFflgBDnyv6_wqQWc1E2XEhYergh11bs9JMGpVwWSwaKgKFi2lQM6_vTXHMJSpBcUTz7e8Fc1QMK9YAkCEyjOL3m8gu_pDwMRzuDlNplA_TjQ2bE_LVUj7Q9myoU5xkSchqX1JeloF9d5foOBjqGRLQeYP8cF1zvDxYvWlEYvmAg5bxTSUsN7j6164FxZBgfGrWTft8Gyj2tDmKrCwEUuhEq7eFi">
+<!-- Overlay -->
+<div class="absolute inset-0 bg-gradient-to-t from-obsidian-base via-obsidian-base/40 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-300"></div>
+<!-- Hover Play Icon -->
+<div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+<div class="w-16 h-16 rounded-full glass-panel flex items-center justify-center shadow-[0_0_30px_rgba(56,189,248,0.4)] border-tech-cyan/50">
+<span class="material-symbols-outlined text-tech-cyan text-4xl ml-1" data-icon="play_arrow" data-weight="fill" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</div>
+</div>
+<!-- Metadata -->
+<div class="absolute bottom-0 left-0 right-0 p-3 flex flex-col gap-1 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
+<div class="flex items-center justify-between mb-1">
+<span class="px-2 py-0.5 rounded text-obsidian-base bg-tech-cyan font-metric-sm text-[10px] uppercase font-bold tracking-wider">4K HDR</span>
+<div class="flex items-center gap-1 text-rating-gold font-metric-sm text-metric-sm">
+<span class="material-symbols-outlined text-[14px]" data-icon="star" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star</span>
+                                8.9
+                            </div>
+</div>
+<h3 class="font-body-md text-body-md font-semibold text-on-surface truncate">赛博朋克：光之边缘</h3>
+<p class="font-metric-sm text-metric-sm text-on-surface-variant">2023 • 2小时 15分</p>
+</div>
+</div>
+<!-- Media Card 2 -->
+<div class="group relative aspect-[2/3] rounded-lg overflow-hidden glass-panel cursor-pointer glow-hover">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="A striking, moody movie poster for a thriller set in an isolated, snow-covered cabin in the deep woods during twilight. Cool blue and stark white tones dominate the palette, with a single warm, ominous glow coming from a window. Cinematic, high-tension atmosphere, detailed rendering." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCuzYbSa5chZDWO1oIC1cb2PsWSLYGgqJ2sAGL_eQL6CD2wYRVN_toCUJKwe-7wcFHGhtrQnp7blGLKsp3z8z5BBEtOPLqYTeQ-cV9cBDjj4v6mQ8kuqbUl0TiF4DOO-yW3biyFIuLGgMYOo44d0gZPZlg-bHVhp298Iem632s_FZU-tR4ja9S2Gao9mUmXxdXIK7TnjvQNfUyFC9OmZhjL6yqdyrfMN1StbSGD66V7UxwmeQw6aHaJ">
+<div class="absolute inset-0 bg-gradient-to-t from-obsidian-base via-obsidian-base/40 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-300"></div>
+<div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+<div class="w-16 h-16 rounded-full glass-panel flex items-center justify-center shadow-[0_0_30px_rgba(56,189,248,0.4)] border-tech-cyan/50">
+<span class="material-symbols-outlined text-tech-cyan text-4xl ml-1" data-icon="play_arrow" data-weight="fill" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</div>
+</div>
+<div class="absolute bottom-0 left-0 right-0 p-3 flex flex-col gap-1 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
+<div class="flex items-center justify-between mb-1">
+<span class="px-2 py-0.5 rounded border border-white/20 text-on-surface-variant font-metric-sm text-[10px] uppercase font-bold tracking-wider">1080P</span>
+<div class="flex items-center gap-1 text-rating-gold font-metric-sm text-metric-sm">
+<span class="material-symbols-outlined text-[14px]" data-icon="star" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star</span>
+                                7.4
+                            </div>
+</div>
+<h3 class="font-body-md text-body-md font-semibold text-on-surface truncate">寒冬之握</h3>
+<p class="font-metric-sm text-metric-sm text-on-surface-variant">2022 • 1小时 50分</p>
+</div>
+</div>
+<!-- Media Card 3 -->
+<div class="group relative aspect-[2/3] rounded-lg overflow-hidden glass-panel cursor-pointer glow-hover">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="An expansive, epic fantasy landscape movie poster featuring a massive ancient dragon curled around a crumbling stone citadel. Deep emerald greens, rich golds, and dark obsidian blacks create a high-fantasy, premium aesthetic. Dramatic rim lighting outlines the dragon's scales." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCUjeMYcuuYU8qZeL_4UKGLLseHzwcZ8C7ifrrftutqtMrPDbteoNh150dQ2HldPelGuKoQVbQQLt95rHjMI__fm8Menonwx0Yk8iFqvLaE-j18r74X9Vj8xaTK4x6Q3pJCdWBf9BwRnd-KAIhpipe010ZHrWf6qUXsWRqBxgdcojV6MEE80NK38kk_cAdRMnnHarq8kmiXh7i1O-fZc0mOv4EfiV81N66IeRAvHFo6_hhj1HGi-5AI">
+<div class="absolute inset-0 bg-gradient-to-t from-obsidian-base via-obsidian-base/40 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-300"></div>
+<div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+<div class="w-16 h-16 rounded-full glass-panel flex items-center justify-center shadow-[0_0_30px_rgba(56,189,248,0.4)] border-tech-cyan/50">
+<span class="material-symbols-outlined text-tech-cyan text-4xl ml-1" data-icon="play_arrow" data-weight="fill" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</div>
+</div>
+<div class="absolute bottom-0 left-0 right-0 p-3 flex flex-col gap-1 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
+<div class="flex items-center justify-between mb-1">
+<span class="px-2 py-0.5 rounded text-obsidian-base bg-tech-cyan font-metric-sm text-[10px] uppercase font-bold tracking-wider">4K HDR</span>
+<div class="flex items-center gap-1 text-rating-gold font-metric-sm text-metric-sm">
+<span class="material-symbols-outlined text-[14px]" data-icon="star" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star</span>
+                                9.2
+                            </div>
+</div>
+<h3 class="font-body-md text-body-md font-semibold text-on-surface truncate">暗影国度</h3>
+<p class="font-metric-sm text-metric-sm text-on-surface-variant">2024 • 3小时 05分</p>
+</div>
+</div>
+<!-- Media Card 4 -->
+<div class="group relative aspect-[2/3] rounded-lg overflow-hidden glass-panel cursor-pointer glow-hover">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="A minimalist, highly stylized anime movie poster showing a lone samurai standing on a reflective salt flat under a massive, glowing full moon. The color palette is restricted to pure blacks, pristine whites, and vivid crimson accents. Clean lines, atmospheric, cinematic composition." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD3d6EmRDN4_BhV8OJdyu8nIuo3PB8d_HUIP53dbie5T89wImNsKw900qw3jKcoiDCtbx8rEZp461eF_Kah5l0VLwucNriBTD1Xr1V0T99Pi6Qc7g8r8yiwCuocSbYu0lRNgNw0IUNkQX1pkVG6SVdZ-Ih2RUmClAFoH_hs77WnBbGB4c8mPIn7powwAbR08ntCr6T2LsmUTaoM_CFFR_6wy7DSdA2K--25P7ymrK00MCEWy2dDuLId">
+<div class="absolute inset-0 bg-gradient-to-t from-obsidian-base via-obsidian-base/40 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-300"></div>
+<div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+<div class="w-16 h-16 rounded-full glass-panel flex items-center justify-center shadow-[0_0_30px_rgba(56,189,248,0.4)] border-tech-cyan/50">
+<span class="material-symbols-outlined text-tech-cyan text-4xl ml-1" data-icon="play_arrow" data-weight="fill" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</div>
+</div>
+<div class="absolute bottom-0 left-0 right-0 p-3 flex flex-col gap-1 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
+<div class="flex items-center justify-between mb-1">
+<span class="px-2 py-0.5 rounded text-obsidian-base bg-tech-cyan font-metric-sm text-[10px] uppercase font-bold tracking-wider">4K</span>
+<div class="flex items-center gap-1 text-rating-gold font-metric-sm text-metric-sm">
+<span class="material-symbols-outlined text-[14px]" data-icon="star" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star</span>
+                                8.5
+                            </div>
+</div>
+<h3 class="font-body-md text-body-md font-semibold text-on-surface truncate">猩红之月</h3>
+<p class="font-metric-sm text-metric-sm text-on-surface-variant">2021 • 1小时 45分</p>
+</div>
+</div>
+<!-- Media Card 5 -->
+<div class="group relative aspect-[2/3] rounded-lg overflow-hidden glass-panel cursor-pointer glow-hover hidden sm:block">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="An action-packed, modern espionage movie poster featuring a high-speed car chase through neon-lit streets of Tokyo. Motion blur effects, vivid reflections on wet asphalt, and intense cinematic lighting. The aesthetic is sleek, high-tech, and adrenaline-fueled." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD4nFC2GeD-WDk2wbCk8t_82LTQDc97_7yVgPosHclPO4R5YopFkNApHOsNITNerhi9183hUeDEeO8mPIBg5EFUpBV1WONl-QO_4RMRx1CdlHV4mTsRvI2fXCsWdr0FLFLDuOweRTVcJfS4g7P4-g1i2cGIUJr0eu6JWmvEPz4AaYVDy34eZEx8VlhMQfi3gMtU-Q7B2OQD_p_sZcLW2qa0cVS8m1IfMJXfASRhnptUQr8RgwrCmaFV">
+<div class="absolute inset-0 bg-gradient-to-t from-obsidian-base via-obsidian-base/40 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-300"></div>
+<div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+<div class="w-16 h-16 rounded-full glass-panel flex items-center justify-center shadow-[0_0_30px_rgba(56,189,248,0.4)] border-tech-cyan/50">
+<span class="material-symbols-outlined text-tech-cyan text-4xl ml-1" data-icon="play_arrow" data-weight="fill" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</div>
+</div>
+<div class="absolute bottom-0 left-0 right-0 p-3 flex flex-col gap-1 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
+<div class="flex items-center justify-between mb-1">
+<span class="px-2 py-0.5 rounded border border-white/20 text-on-surface-variant font-metric-sm text-[10px] uppercase font-bold tracking-wider">1080P</span>
+<div class="flex items-center gap-1 text-rating-gold font-metric-sm text-metric-sm">
+<span class="material-symbols-outlined text-[14px]" data-icon="star" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star</span>
+                                6.8
+                            </div>
+</div>
+<h3 class="font-body-md text-body-md font-semibold text-on-surface truncate">东京漂移协议</h3>
+<p class="font-metric-sm text-metric-sm text-on-surface-variant">2023 • 2小时 00分</p>
+</div>
+</div>
+<!-- Media Card 6 -->
+<div class="group relative aspect-[2/3] rounded-lg overflow-hidden glass-panel cursor-pointer glow-hover hidden md:block">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="A serene, visually stunning documentary poster showing a majestic deep-sea bioluminescent jellyfish against an pitch-black ocean background. The glowing blues and greens of the creature illuminate the dark water. High-definition, National Geographic style photography, calm yet mysterious." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBfiNkhgouPMWcOMV2VIulqmC11DiiMIj4Oc9w3DwKwZQfyVvc-uKGE_3UMbuQsn_CCOP5Jxro6b4ougwZ1y0rCaB12m1Z5PamqMKKxh49L0l84zyg-Z-eWSFNo0IwfZOWKp_MwlaqpyZADQpp8MhO2BE-Zl6VU4l1kzZorTRbDgo5od23EZ04Da875h3H98A7WmtMq-cfEkkDVAlkYFEXO8EoNYg2IvHc2FQ0ueQnImprO8e3ZmmfY">
+<div class="absolute inset-0 bg-gradient-to-t from-obsidian-base via-obsidian-base/40 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-300"></div>
+<div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+<div class="w-16 h-16 rounded-full glass-panel flex items-center justify-center shadow-[0_0_30px_rgba(56,189,248,0.4)] border-tech-cyan/50">
+<span class="material-symbols-outlined text-tech-cyan text-4xl ml-1" data-icon="play_arrow" data-weight="fill" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</div>
+</div>
+<div class="absolute bottom-0 left-0 right-0 p-3 flex flex-col gap-1 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
+<div class="flex items-center justify-between mb-1">
+<span class="px-2 py-0.5 rounded text-obsidian-base bg-tech-cyan font-metric-sm text-[10px] uppercase font-bold tracking-wider">4K DV</span>
+<div class="flex items-center gap-1 text-rating-gold font-metric-sm text-metric-sm">
+<span class="material-symbols-outlined text-[14px]" data-icon="star" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star</span>
+                                9.5
+                            </div>
+</div>
+<h3 class="font-body-md text-body-md font-semibold text-on-surface truncate">深渊之光</h3>
+<p class="font-metric-sm text-metric-sm text-on-surface-variant">2020 • 1小时 25分</p>
+</div>
+</div>
+</div>
+<!-- Loading Indicator -->
+<div class="py-8 flex justify-center">
+<div class="w-8 h-8 border-2 border-surface-container border-t-tech-cyan rounded-full animate-spin"></div>
+</div>
+</main>
+</div>
+</body></html>

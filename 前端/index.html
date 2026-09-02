@@ -1,0 +1,1437 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="home-active"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<meta name="description" content="TTV Box 家庭影院媒体中心：聚合本地媒体库、云盘与流媒体播放，提供统一的影视浏览与播放体验。">
+<title>TTV Box · 家庭影院</title>
+<link rel="icon" type="image/png" href="/assets/favicon.png">
+<!-- 样式表并行加载:此前 CSS 经 main.js(模块脚本,延迟执行)引入,
+     启动瞬间页面以无样式状态渲染,品牌 Logo 按默认尺寸铺满整屏(FOUC)。 -->
+<link rel="stylesheet" href="/src/styles.css?direct">
+<script type="module" src="/src/main.js"></script>
+<style>
+  /* 关键样式兜底:样式表到达前的首帧也保持深色基底、Logo 受控尺寸 */
+  html,body{margin:0;background:#07090d;color:#e8ecf4;color-scheme:dark}
+  .brand-lumi-icon{width:34px;height:34px;display:block}
+  .brand-badge{display:inline-flex;align-items:center;gap:10px}
+  .brand-name{font:700 17px/1 "Inter","HarmonyOS Sans SC","Microsoft YaHei",system-ui,sans-serif;color:#fff}
+</style>
+</head>
+<body class="home-active">
+
+<!-- 氛围背景：散光、漫射光斑 + 网格 -->
+<div class="ambient" aria-hidden="true">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+  <div class="grid-lines"></div><div class="vignette"></div>
+</div>
+
+<!-- 顶部全景无边框窗口工具栏 (LumiPlayer Integrated Frame) -->
+<header class="app-header" data-tauri-drag-region>
+  <!-- 左侧品牌 Logo -->
+  <div class="brand-badge" id="brandBadge" title="TTV Box" onclick="handleBrandClick()">
+    <img class="brand-lumi-icon brand-lumi-icon-normal" src="/assets/ttv-light-curtain-mark.svg" alt="">
+    <img class="brand-lumi-icon brand-lumi-icon-adult" src="/assets/ttv-light-curtain-night-mark.svg" alt="">
+    <span class="brand-name">TTV Box</span>
+  </div>
+
+  <!-- 中间动态胶囊导航 -->
+  <nav class="topbar-island" id="topbarIsland">
+    <div class="topbar-inner">
+      <div class="topbar-core">
+        <div class="nav-tabs">
+          <button class="nav-tab active" data-view="home">首页</button>
+          <button class="nav-tab" data-view="library">影视库</button>
+          <button class="nav-tab" data-view="short-drama">短剧</button>
+          <button class="nav-tab" data-view="cloud">云盘</button>
+        </div>
+
+        <div class="user-pill" title="个人中心 · 我的内容" onclick="showView('profile')">
+          <span class="user-avatar" aria-hidden="true">
+          </span>
+          <span class="user-name">本机用户</span>
+          <span class="user-badge">本机</span>
+        </div>
+      </div>
+
+      <!-- 扩展操作组（悬停时展开） -->
+      <div class="topbar-expand-group">
+        <div class="island-chip cloud-chip" title="光鸭云盘" onclick="showView('cloud')">
+          <span class="chip-icon icon-cloud">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M17.5 19a4.5 4.5 0 1 0-.9-8.9 6 6 0 0 0-11.4 1.6A3.8 3.8 0 0 0 6.5 19z"/></svg>
+          </span>
+          <div class="chip-text">
+            <b>光鸭云盘</b>
+            <small id="cloudScanStatus">尚未扫描</small>
+          </div>
+          <span class="chip-dot dot-green"></span>
+        </div>
+
+        <div class="island-chip emby-chip" hidden title="Emby 媒体服务器" onclick="showView('servers')">
+          <span class="chip-icon icon-emby">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 12l10 10 10-10L12 2zm-1.5 13.5v-7l5.5 3.5-5.5 3.5z"/></svg>
+          </span>
+          <div class="chip-text">
+            <b>Emby</b>
+            <small id="embyStatus">未连接</small>
+          </div>
+          <span class="chip-dot dot-gray"></span>
+        </div>
+
+        <button class="island-gear" title="设置" onclick="showView('settings')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.01a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.01a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 右侧窗口控制胶囊 -->
+  <div class="win-controls-capsule">
+    <button class="win-btn" onclick="minimizeWindow()" title="最小化" aria-label="最小化">
+      <svg viewBox="0 0 24 24"><path d="M5 12h14"/></svg>
+    </button>
+    <button class="win-btn" onclick="toggleMaximizeWindow()" title="最大化 / 还原" aria-label="最大化">
+      <svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/></svg>
+    </button>
+    <button class="win-btn win-close" onclick="closeWindow()" title="关闭窗口" aria-label="关闭">
+      <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
+</header>
+
+<main id="app">
+
+  <!-- ============ 首页 ============ -->
+  <section class="view active" id="view-home">
+    <div class="container">
+      <div class="hero glass-deep" id="hero" style="border:none">
+        <div class="hero-slides" id="heroSlides">
+          <div class="hero-slide" id="slideCur"><img alt="" src="/assets/hero-backdrop.jpg" decoding="async"/></div>
+          <div class="hero-slide" id="slideNext"><img alt="" src="/assets/hero-backdrop.jpg" decoding="async"/></div>
+        </div>
+        <div class="hero-shade"></div>
+        <div class="hero-content">
+          <div class="hero-copy" id="heroCopy">
+            <div class="hero-recommend-tag">媒体库状态</div>
+            <div class="hero-studio-tag"><span class="marvel-badge">精选放映</span></div>
+            <h1 class="hero-title" id="heroTitle">正在读取媒体库</h1>
+            <p class="hero-desc" id="heroDesc">连接本地目录或媒体来源后，这里会显示真实的媒体海报、简介和播放入口。</p>
+          </div>
+          <div class="hero-actions">
+            <button class="btn btn-hero-play" onclick="openHeroExpandPlayer(this)">
+              <svg viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z"/></svg>
+              <span id="heroPlayLabel">立即播放</span>
+            </button>
+            <button class="btn-round" title="加入追剧" onclick="toggleFavorite(MOVIES[current])">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"></path></svg>
+            </button>
+          </div>
+          <div class="hero-bottom-sub">
+            <span class="hero-sub-left" onclick="showView('profile')">继续播放 →</span>
+            <span class="hero-sub-right">横向滑动浏览 →</span>
+          </div>
+        </div>
+        <!-- 封面右下角 · 现代对齐手风琴画廊 -->
+        <div class="hero-gallery">
+          <div class="hg-head">
+            <div class="hg-left-controls">
+              <div class="hg-source-toggle">
+                <button class="hg-src-btn active" onclick="setSourceTab(this, 'lib')">
+                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"/></svg>
+                  媒体库
+                </button>
+                <button class="hg-src-btn" onclick="setSourceTab(this, 'cloud')">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.5 19a4.5 4.5 0 1 0-.9-8.9 6 6 0 0 0-11.4 1.6A3.8 3.8 0 0 0 6.5 19z"/></svg>
+                  云盘
+                </button>
+              </div>
+              <div class="hg-category-tabs">
+                <button class="hg-cat-tab active" onclick="setCategoryTab(this, 'latest')">最新影视</button>
+                <button class="hg-cat-tab" onclick="setCategoryTab(this, 'recent')">最近更新</button>
+              </div>
+            </div>
+            <button class="hg-all-btn" onclick="showView('library')">全部 <i>→</i></button>
+          </div>
+          <div class="hg-row" id="galleryRow"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ============ 媒体库 ============ -->
+  <section class="view" id="view-library">
+    <div class="container">
+      <div class="lib-layout">
+        <aside class="sidebar glass" data-stagger>
+          <div class="sb-label">来源</div>
+          <div class="storage-card">
+            <div class="storage-num" id="libraryCount">—</div>
+            <div class="storage-cap" id="libraryCountCap">等待真实媒体库数据</div>
+          </div>
+          <div class="src-item active" onclick="toast('正在浏览 TVMaze 真实公开目录')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="12" rx="2"></rect><path d="M8 20h8M12 16v4"></path></svg>TVMaze 公开目录</div>
+          <div class="src-item" hidden onclick="openServerModal('NAS / SMB')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="7" rx="2"></rect><rect x="3" y="13" width="18" height="7" rx="2"></rect><path d="M7 7.5h.01M7 16.5h.01"></path></svg>NAS 媒体存储</div>
+          <div class="src-item" hidden onclick="showView('downloads')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v12m0 0 4-4m-4 4-4-4"></path><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"></path></svg>远程下载</div>
+          <div class="src-item" onclick="showView('trash')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2m3 0-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path></svg>回收站</div>
+          <div class="sb-divider"></div>
+          <div class="library-source-manager" id="librarySourceManager">
+            <div class="library-source-manager-head"><span>已添加来源</span><small id="librarySourceManagerCount">0</small></div>
+            <div id="librarySourceList" class="library-source-list"></div>
+          </div>
+          <div class="src-item" onclick="openDriveModal('自定义媒体存储')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 5v14M5 12h14"></path></svg>添加来源</div>
+          <div class="src-item" onclick="showView('logs')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 17l5-6 4 3 6-8"></path><path d="M3 21h18"></path></svg>硬件监控与日志</div>
+        </aside>
+        <div>
+          <div class="filterbar" data-stagger>
+            <div class="library-category-level" id="libraryCategoryLevel" aria-label="媒体分类"></div>
+            <div class="dropdown" id="yearDd">
+              <button class="pill dd-btn" onclick="toggleDd('yearDd')"><span id="yearLabel">年份</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"></path></svg>
+              </button>
+              <div class="dd-menu glass-deep" id="yearMenu">
+                <div class="dd-item" onclick="pickYear('年份')">全部年份</div>
+              </div>
+            </div>
+            <div class="library-tools">
+              <label class="search-box" title="搜索片名、类型或播出平台">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg>
+                <input id="librarySearch" type="search" placeholder="搜索媒体库" autocomplete="off">
+              </label>
+              <select class="sort-select" id="librarySort" aria-label="媒体库排序">
+                <option value="rating">评分优先</option>
+                <option value="year">年份优先</option>
+                <option value="title">片名排序</option>
+              </select>
+            </div>
+            <div class="result-count" id="libraryResultCount">等待媒体库数据</div>
+            <!-- 媒体库连接/同步过程状态（app-runtime.js catalogStatus 写入点） -->
+            <div class="result-count" id="catalogStatus"></div>
+          </div>
+          <div class="grid" id="libGrid"></div>
+          <div class="library-feed-sentinel" id="libraryFeedSentinel" aria-hidden="true"></div>
+          <div class="lib-loading active" id="catalogLoading"><div class="spinner"></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 短剧 ============ -->
+  <section class="view" id="view-short-drama">
+    <div class="container short-drama-page">
+      <div class="lib-layout short-drama-layout">
+        <aside class="sidebar glass short-drama-sidebar" data-stagger>
+          <div class="sb-label">短剧来源</div>
+          <div class="storage-card short-drama-storage">
+            <div class="storage-num" id="shortDramaCount">—</div>
+            <div class="storage-cap" id="shortDramaCap">已加载短剧</div>
+          </div>
+          <button class="src-item active short-drama-source" type="button" data-hongguo-source="short" id="hongguoSourceShort">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="3" width="16" height="18" rx="3"></rect><path d="m10 9 5 3-5 3V9z"></path></svg>
+            红果短剧
+          </button>
+          <button class="src-item short-drama-source" type="button" data-hongguo-source="comic" id="hongguoSourceComic">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="4" width="14" height="16" rx="2"></rect><path d="M8 8h8M8 12h8M8 16h5"></path></svg>
+            红果漫剧
+          </button>
+          <div class="sb-divider"></div>
+          <div class="short-drama-source-note">
+            <b><span class="short-drama-note-icon">↗</span> 站内直接播放</b>
+            <p id="shortDramaSourceNote">点卡片选集即可在应用内播放，无需跳转官网。官网网页端每部剧开放前几集，其余集数以官方 App 为准。</p>
+          </div>
+          <div class="short-drama-side-tip"><span>⌁</span><div><b>小提示</b><p>悬停卡片查看简介，点击打开选集。</p></div></div>
+        </aside>
+
+        <div class="short-drama-content">
+          <div class="filterbar short-drama-filterbar" data-stagger>
+            <div class="short-drama-filter-title"><span>EXPLORE</span><b>按口味挑选</b><em id="shortDramaFilterHint">横向滑动查看更多题材</em></div>
+            <div class="short-drama-categories" id="shortDramaCategories" aria-label="短剧题材">
+              <button class="pill active" type="button" data-short-facet="">全部</button>
+            </div>
+            <div class="library-tools short-drama-tools">
+              <label class="search-box" title="在已加载的短剧流中搜索片名或题材">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg>
+                <input id="shortDramaSearch" type="search" placeholder="搜索短剧" autocomplete="off">
+              </label>
+              <select class="sort-select" id="shortDramaGender" aria-label="短剧受众">
+                <option value="">全部受众</option>
+                <option value="1">男频</option>
+                <option value="0">女频</option>
+              </select>
+              <select class="sort-select" id="shortDramaTime" aria-label="上新时间">
+                <option value="">全部时间</option>
+                <option value="1">7天内上新</option>
+                <option value="2">14天内上新</option>
+                <option value="3">30天内上新</option>
+                <option value="4">90天内上新</option>
+              </select>
+              <select class="sort-select" id="shortDramaSort" aria-label="短剧排序">
+                <option value="1">最热优先</option>
+                <option value="2">最新上架</option>
+              </select>
+            </div>
+            <div class="short-drama-result-row">
+              <div class="result-count" id="shortDramaResultCount">等待短剧数据</div>
+              <div class="short-drama-inline-actions">
+                <span class="short-drama-key-hint" id="shortDramaUpdated">正在准备目录</span>
+                <button class="icon-btn short-drama-refresh-btn" type="button" id="shortDramaRefresh" title="刷新短剧" aria-label="刷新短剧">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 12a8 8 0 1 1-2.34-5.66M20 4v6h-6"></path></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="grid short-drama-grid" id="shortDramaGrid">
+            <div class="short-drama-loading" role="status" aria-live="polite">
+              <span class="short-drama-loader-orbit" aria-hidden="true"></span>
+              <span class="short-drama-loading-copy"><b>正在读取短剧目录</b><small>正在同步热播内容</small></span>
+            </div>
+          </div>
+          <div class="short-drama-sentinel is-initial" id="shortDramaSentinel" data-state="initial" role="button" tabindex="0" aria-label="加载更多短剧">
+            <div class="spinner"></div><span id="shortDramaSentinelText">继续下滑加载更多短剧</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 扫描与刮削进度 ============ -->
+  <section class="view" id="view-scan-progress">
+    <div class="container scan-progress-page">
+      <div class="back-link" onclick="showView('library')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5m7-7-7 7 7 7"></path></svg> 返回影视库
+      </div>
+      <div class="scan-progress-head">
+        <div>
+          <div class="section-title" style="--accent:#38bdf8">资源扫描与刮削</div>
+          <h2 id="scanProgressTitle">等待任务</h2>
+          <p id="scanProgressSubtitle">扫描云盘或本地目录后，视频会先导入媒体库，再使用已启用的平台补全元数据。</p>
+        </div>
+        <span class="scan-progress-state" id="scanProgressState">待开始</span>
+      </div>
+      <div class="scan-progress-card glass">
+        <div class="scan-progress-track" id="scanProgressTrack"><i id="scanProgressFill"></i></div>
+        <div class="scan-progress-row"><strong id="scanProgressStage">等待任务</strong><span id="scanProgressPercent">0%</span></div>
+        <div class="scan-progress-stats">
+          <div><b id="scanProgressFolders">0</b><span>文件夹</span></div>
+          <div><b id="scanProgressFiles">0</b><span>发现文件</span></div>
+          <div><b id="scanProgressImported">0</b><span>已入库视频</span></div>
+          <div><b id="scanProgressUpdated">0</b><span>已刮削</span></div>
+          <div><b id="scanProgressMatched">0</b><span>已匹配</span></div>
+          <div><b id="scanProgressCovers">0</b><span>封面已缓存</span></div>
+          <div><b id="scanProgressAdultIsolated">0</b><span>18+ 已隔离</span></div>
+          <div><b id="scanProgressSkipped">0</b><span>未匹配/过滤</span></div>
+          <div><b id="scanProgressPromotional">0</b><span>广告/推广</span></div>
+          <div><b id="scanProgressNonVideo">0</b><span>非视频</span></div>
+        </div>
+        <div class="scan-progress-current" id="scanProgressCurrent">尚未开始任务</div>
+      </div>
+      <div class="scan-progress-log glass-deep" id="scanProgressLog"></div>
+      <div class="scan-progress-actions">
+        <button class="btn btn-ghost" id="scanProgressLibrary" onclick="showView('library')" disabled>查看影视库</button>
+        <button class="btn btn-accent" id="scanProgressClose" onclick="showView('library')">返回影视库</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 详情页 ============ -->
+  <section class="view" id="view-detail">
+    <div class="container">
+      <div class="back-link" onclick="detailBack()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5m7-7-7 7 7 7"></path></svg> 返回媒体库
+      </div>
+      <div class="detail-layout">
+        <div class="d-poster-card glass">
+          <div class="d-poster">
+            <img id="dPoster" src="/assets/detail-poster.jpg" alt="poster">
+            <div class="d-src-tag"><span class="badge" id="dBadge">VIDEO</span><span class="badge" id="dSourceBadge">媒体库</span></div>
+            <div class="poster-play" onclick="openPlayer(selectedMovie, this)"><span><svg viewBox="0 0 24 24" fill="#fff"><path d="M8 5.5v13l11-6.5z"></path></svg></span></div>
+          </div>
+          <div class="d-actions">
+            <button class="btn btn-ghost" id="dFavBtn" onclick="toggleDetailFav()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s-7.5-4.7-9.5-9C1 8.5 3 5 6.5 5c2 0 3.5 1 4.5 2.5C12 6 13.5 5 15.5 5 19 5 21 8.5 20.5 12c-2 4.3-8.5 9-8.5 9z"></path></svg><span id="dFavText">收藏</span></button>
+            <button class="btn btn-ghost" onclick="openEditModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 3a2.8 2.8 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5z"></path></svg>编辑</button>
+            <button class="btn btn-ghost" onclick="openStatsModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 3v18h18"></path><path d="M7 15v3M12 9v9M17 5v13"></path></svg>统计</button>
+          </div>
+        </div>
+        <div class="d-info glass-deep" data-stagger>
+          <div class="d-title-row">
+            <h2 class="d-title" id="dTitle">媒体详情</h2>
+            <span class="rate-chip">★ <span id="dRate">—</span></span>
+          </div>
+          <div class="d-meta">
+            <span id="dYear">年份未知</span><span class="sep">•</span>
+            <span id="dDur">时长未知</span><span class="sep">•</span>
+            <span id="dGenre">未分类</span><span class="sep">•</span>
+            <span class="badge" id="dLibraryKind" style="background:rgba(255,255,255,.08)">媒体库</span>
+          </div>
+          <div class="d-sec">
+          <h3>剧情简介</h3>
+            <p id="dDesc">选择媒体后显示已刮削的真实简介。</p>
+          </div>
+          <div class="d-sec" id="dAdultFacts" hidden>
+            <h3>作品资料</h3>
+            <div class="adult-fact-grid" id="dAdultFactGrid"></div>
+            <div class="adult-tag-row" id="dAdultTags"></div>
+          </div>
+          <div class="d-sec" id="dAdultActors" hidden>
+            <h3>演员</h3>
+            <div class="adult-actor-row" id="dAdultActorRow"></div>
+          </div>
+          <div class="d-sec">
+            <h3>媒体信息</h3>
+            <div class="cast-row">
+              <div class="cast-card"><div class="cast-avatar">◉</div><div class="cast-name" id="dNetwork">未提供</div><div class="cast-role" id="dNetworkRole">媒体平台</div></div>
+              <div class="cast-card"><div class="cast-avatar dim">#</div><div class="cast-name" id="dStatus">未提供</div><div class="cast-role">资源状态</div></div>
+              <div class="cast-card"><div class="cast-avatar dim">◎</div><div class="cast-name" id="dSource">未提供</div><div class="cast-role">数据来源</div></div>
+            </div>
+          </div>
+          <!-- 选集播放 -->
+          <div class="episodes-sec" id="detailEpisodesSection" hidden>
+            <div class="section-title" id="detailEpisodesTitle" style="--accent:#38bdf8">剧集选集</div>
+            <div class="episodes-grid" id="episodesGrid"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 版本选择与规格 -->
+      <div class="version-card glass" data-stagger>
+        <div class="section-title" style="--accent:#ffb35c">播放源与画质版本</div>
+        <div class="versions-grid" id="detailVersions"></div>
+      </div>
+
+      <!-- 媒体库中的其他内容 -->
+      <div class="version-card glass similar-sec" data-stagger>
+        <div class="section-title" id="similarSectionTitle" style="--accent:#818cf8">媒体库中的其他内容</div>
+        <div class="similar-row" id="similarRow"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 云盘 ============ -->
+  <section class="view" id="view-cloud">
+    <div class="container">
+      <div class="cloud-layout">
+        <!-- 中间卡片列表 -->
+        <div class="cloud-main" data-stagger>
+          <div class="cloud-main-header">
+            <div class="breadcrumb">
+              <span class="bc-lead">STORAGE PROVIDERS</span>
+              <span class="bc-sep">/</span>
+              <b id="currentDriveBread">本地磁盘</b>
+              <span class="bc-tag">已选中</span>
+            </div>
+            <div class="cloud-tabs-row">
+              <button class="cloud-tab active" onclick="filterCloudGrid(this, 'all')">全部来源</button>
+              <button class="cloud-tab" onclick="filterCloudGrid(this, 'local')">本地与局域网</button>
+              <button class="cloud-tab" onclick="filterCloudGrid(this, 'cloud')">公有云盘</button>
+            </div>
+          </div>
+
+          <div class="cloud-zone-label">LOCAL &amp; PRIVATE STORAGE · 本地与私有协议</div>
+          <div class="svc-grid">
+            <div class="svc-card glass" data-category="local" onclick="selectCloudSource('本地磁盘')">
+              <div class="svc-icon"><img src="assets/cloud-providers/local.svg" alt="本地磁盘"></div>
+              <div class="svc-body">
+                <div class="svc-title-row">
+                  <div class="svc-name">本地磁盘</div>
+                  <span class="svc-badge ready">本机来源</span>
+                </div>
+                <div class="svc-desc">选择真实文件系统目录后扫描并导入媒体库</div>
+              </div>
+            </div>
+            <div class="svc-card glass" data-category="local" onclick="selectCloudSource('OpenList')">
+              <div class="svc-icon"><img src="assets/cloud-providers/openlist.svg" alt="OpenList"></div>
+              <div class="svc-body">
+                <div class="svc-title-row">
+                  <div class="svc-name">OpenList</div>
+                  <span class="svc-badge">WebDAV</span>
+                </div>
+                <div class="svc-desc">统一 WebDAV 端点接入与媒体库聚合</div>
+              </div>
+            </div>
+            <div class="svc-card glass" data-category="local" onclick="selectCloudSource('WebDAV')">
+              <div class="svc-icon"><img src="assets/cloud-providers/webdav.svg" alt="WebDAV"></div>
+              <div class="svc-body">
+                <div class="svc-title-row">
+                  <div class="svc-name">WebDAV</div>
+                  <span class="svc-badge">标准协议</span>
+                </div>
+                <div class="svc-desc">通用 WebDAV 服务器，支持 AList / 坚果云等</div>
+              </div>
+            </div>
+            <div class="svc-card glass" data-category="local" onclick="selectCloudSource('SMB / NAS')">
+              <div class="svc-icon"><img src="assets/cloud-providers/nas.svg" alt="SMB / NAS"></div>
+              <div class="svc-body">
+                <div class="svc-title-row">
+                  <div class="svc-name">SMB / NAS</div>
+                  <span class="svc-badge">局域网</span>
+                </div>
+                <div class="svc-desc">家庭局域网群晖 / 威联通 / TrueNAS 共享</div>
+              </div>
+            </div>
+            <div class="svc-card glass" data-category="local" onclick="selectCloudSource('SFTP')">
+              <div class="svc-icon"><img src="assets/cloud-providers/sftp.svg" alt="SFTP"></div>
+              <div class="svc-body">
+                <div class="svc-title-row">
+                  <div class="svc-name">SFTP</div>
+                  <span class="svc-badge">SSH 加密</span>
+                </div>
+                <div class="svc-desc">基于 Linux 服务器的 SSH 加密远程文件传输</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="cloud-zone-label">DIRECT CLOUD DRIVES · 公有云与网盘适配器 <span class="badge" style="letter-spacing:1px">按来源启用</span></div>
+          <div class="svc-row">
+            <div class="svc-card glass" data-category="cloud" onclick="selectCloudSource('光鸭云盘')">
+              <div class="svc-icon warm"><img src="assets/cloud-providers/guangya.png" alt="光鸭云盘"></div>
+              <div class="svc-body">
+                <div class="svc-title-row">
+                  <div class="svc-name">光鸭云盘</div>
+                  <span class="svc-badge oauth">OAuth 2.0</span>
+                </div>
+                <div class="svc-desc">支持扫码登录，选择文件夹批量导入影视</div>
+              </div>
+            </div>
+            <div class="svc-card glass" data-category="cloud" onclick="selectCloudSource('123云盘')">
+              <div class="svc-icon"><img src="assets/cloud-providers/123pan.ico" alt="123云盘"></div>
+              <div class="svc-body">
+                <div class="svc-title-row">
+                  <div class="svc-name">123云盘</div>
+                  <span class="svc-badge">检查适配器</span>
+                </div>
+                <div class="svc-desc">选择后由运行时返回当前适配与连接状态</div>
+              </div>
+            </div>
+            <div class="svc-card glass" data-category="cloud" onclick="selectCloudSource('百度网盘')">
+              <div class="svc-icon"><img src="assets/cloud-providers/baidu.svg" alt="百度网盘"></div>
+              <div class="svc-body">
+                <div class="svc-title-row">
+                  <div class="svc-name">百度网盘</div>
+                  <span class="svc-badge">检查适配器</span>
+                </div>
+                <div class="svc-desc">选择后由运行时返回当前适配与连接状态</div>
+              </div>
+            </div>
+            <div class="svc-card glass" data-category="cloud" onclick="selectCloudSource('阿里云盘')">
+              <div class="svc-icon"><img src="assets/cloud-providers/aliyun.svg" alt="阿里云盘"></div>
+              <div class="svc-body">
+                <div class="svc-title-row">
+                  <div class="svc-name">阿里云盘</div>
+                  <span class="svc-badge">检查适配器</span>
+                </div>
+                <div class="svc-desc">选择后由运行时返回当前适配与连接状态</div>
+              </div>
+            </div>
+            <div class="svc-card glass" data-category="cloud" onclick="selectCloudSource('夸克网盘')">
+              <div class="svc-icon"><img src="assets/cloud-providers/quark.ico" alt="夸克网盘"></div>
+              <div class="svc-body">
+                <div class="svc-title-row">
+                  <div class="svc-name">夸克网盘</div>
+                  <span class="svc-badge">适配中</span>
+                </div>
+                <div class="svc-desc">适配器尚未就绪，不会显示虚构文件或连接状态</div>
+              </div>
+            </div>
+            <div class="svc-card glass" data-category="cloud" onclick="selectCloudSource('115网盘')">
+              <div class="svc-icon"><img src="assets/cloud-providers/115.ico" alt="115网盘"></div>
+              <div class="svc-body">
+                <div class="svc-title-row">
+                  <div class="svc-name">115网盘</div>
+                  <span class="svc-badge">检查适配器</span>
+                </div>
+                <div class="svc-desc">选择后由运行时返回当前适配与连接状态</div>
+              </div>
+            </div>
+            <div class="svc-card glass" data-category="cloud" onclick="selectCloudSource('天翼云盘')">
+              <div class="svc-icon"><img src="assets/cloud-providers/tianyi.ico" alt="天翼云盘"></div>
+              <div class="svc-body">
+                <div class="svc-title-row">
+                  <div class="svc-name">天翼云盘</div>
+                  <span class="svc-badge">检查适配器</span>
+                </div>
+                <div class="svc-desc">选择后由运行时返回当前适配与连接状态</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="cloud-inspector">
+          <div class="qr-panel glass" data-stagger>
+            <div class="qr-status" id="qrStatusPill"><span class="dot"></span> 选择一个来源</div>
+            <div class="qr-head">
+              <div class="qr-logo" id="cloudSourceLogo">GY</div>
+              <div><div class="qr-title" id="cloudSourceTitle">云盘来源</div><div class="qr-tip" id="cloudSourceTip">选择来源后查看真实连接状态</div></div>
+            </div>
+            <div class="qr-box" id="cloudSourceBody"><p style="color:var(--text-faint);font-size:12px;text-align:center;line-height:1.7">此处会展示所选来源的登录、配置或浏览状态。</p></div>
+            <button class="btn btn-accent" id="cloudSourceAction" style="justify-content:center" onclick="openDriveModal('WebDAV')">配置来源</button>
+            <div class="qr-actions">
+              <button class="btn btn-ghost" id="cloudScanAction" onclick="startScanPipeline()">扫描本地目录</button>
+              <button class="btn btn-ghost" id="cloudLibraryAction" onclick="openSelectedCloudLibrary()">查看媒体库</button>
+              <button class="btn btn-ghost" id="cloudLogoutAction" onclick="logoutGuangyaAccount()" hidden>退出账号</button>
+            </div>
+          </div>
+          <div class="pipeline glass" data-stagger>
+            <div class="pipe-head">PIPELINE <span class="pipe-status" id="pipeStatusText">等待扫描</span></div>
+            <div class="pipe-num" id="pipeNum">0%</div>
+            <div class="pipe-bar"><i id="pipeBarInner"></i></div>
+            <div class="pipe-stats">
+              <div class="pipe-stat"><b id="pipeDirCount">0</b><span>目录</span></div>
+              <div class="pipe-stat"><b id="pipeVidCount">0</b><span>视频</span></div>
+              <div class="pipe-stat"><b id="pipeLstCount">0</b><span>列表</span></div>
+            </div>
+          </div>
+          <section class="cloud-rename-tool" aria-labelledby="cloudRenameTitle">
+            <div class="cloud-tool-eyebrow"><span>RENAME TOOL</span><span>元数据匹配</span></div>
+            <h3 class="cloud-tool-title" id="cloudRenameTitle">文件整理与批量改名</h3>
+            <label for="cloudRenameDirectory">整理目录</label>
+            <input class="cloud-tool-input" id="cloudRenameDirectory" value="/" readonly>
+            <label for="cloudRenameFormat">命名格式</label>
+            <input class="cloud-tool-input" id="cloudRenameFormat" value="Plex: 名称 (年份) {tmdb-id}">
+            <div class="cloud-tool-buttons">
+              <button type="button" onclick="refreshGuangyaFiles()">刷新文件</button>
+              <button type="button" onclick="previewGuangyaRename()">生成改名预览</button>
+              <button type="button" id="cloudRenameConfirm" disabled title="云端改名接口尚未接入">确认改名</button>
+            </div>
+            <div class="cloud-mini-files" id="cloudMiniFileList">
+              <div class="cloud-mini-files-head"><span>云盘文件</span><span>/</span></div>
+              <div class="cloud-mini-file"><span>选择已登录的光鸭云盘后显示当前目录中的真实文件。</span></div>
+            </div>
+            <div class="cloud-rename-preview" id="cloudRenamePreview">改名预览将在生成前逐项核对。</div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="view" id="view-cloud-browser">
+    <header class="cloud-browser-top" aria-label="云盘文件浏览">
+      <button class="cloud-browser-back" onclick="closeGuangyaFileBrowser()">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        返回云盘工作台
+      </button>
+      <div class="cloud-browser-title-wrap">
+        <small>FILE EXPLORER</small>
+        <h2>云盘分布式文件管理</h2>
+      </div>
+      <div class="cloud-browser-window" aria-label="窗口控制">
+        <button onclick="minimizeWindow()" title="最小化" aria-label="最小化">−</button>
+        <button onclick="toggleMaximizeWindow()" title="最大化 / 还原" aria-label="最大化 / 还原">□</button>
+        <button onclick="closeWindow()" title="关闭" aria-label="关闭">×</button>
+      </div>
+    </header>
+    <div class="cloud-browser-layout">
+      <aside class="cloud-browser-side">
+        <div class="cloud-browser-side-head">
+          <h3>挂载来源</h3>
+          <p>点击无缝切换多源目录</p>
+        </div>
+        <button class="cloud-browser-drive" onclick="showView('cloud');selectCloudSource('本地磁盘')">
+          <div class="cloud-browser-drive-icon">💾</div>
+          <div class="cloud-browser-drive-info">
+            <b>本地磁盘</b>
+            <small>本机文件系统目录</small>
+          </div>
+          <span class="drive-chevron">›</span>
+        </button>
+      <button class="cloud-browser-drive active" id="cloudBrowserGuangyaDrive" onclick="openGuangyaFileBrowser()">
+          <img id="cloudBrowserDriveIcon" alt="光鸭云盘">
+          <div class="cloud-browser-drive-info">
+            <b id="cloudBrowserDriveTitle">光鸭云盘</b>
+            <small id="cloudBrowserDriveStatus">等待真实连接状态</small>
+          </div>
+        <span class="drive-chevron">›</span>
+      </button>
+      <div id="openlistBrowserDrives" aria-label="OpenList 已连接存储"></div>
+      </aside>
+      <div class="cloud-browser-content">
+        <div class="cloud-browser-hero">
+          <img id="cloudBrowserHeroIcon" alt="光鸭云盘">
+          <div class="cloud-browser-hero-meta">
+            <div class="eyebrow">CURRENT STORAGE PROVIDER</div>
+            <h1 id="cloudBrowserTitle">光鸭云盘</h1>
+            <p id="cloudBrowserSubtitle">加载已授权目录</p>
+          </div>
+          <button class="cloud-browser-scan" id="cloudBrowserScan" onclick="scanSelectedGuangyaFolders()">⚡ 开始扫描已加入目录 · 刮削</button>
+        </div>
+        <div class="cloud-browser-toolbar">
+          <button class="cloud-tb-btn" onclick="loadGuangyaRoot()">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+            根目录
+          </button>
+          <button class="cloud-tb-btn" id="cloudBrowserBack" onclick="goGuangyaBack()">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+            返回上级
+          </button>
+          <button class="cloud-tb-btn" onclick="refreshGuangyaFiles()">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6M1 20v-6h6"></path><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+            刷新
+          </button>
+          <div class="cloud-browser-path-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+            <span class="cloud-browser-path" id="cloudBrowserPath">/</span>
+          </div>
+          <span class="cloud-browser-count" id="cloudBrowserCount">0 项</span>
+        </div>
+        <div class="cloud-browser-grid" id="cloudBrowserGrid">
+          <div class="cloud-browser-empty">正在加载真实云盘文件...</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 媒体服务器 ============ -->
+  <section class="view" id="view-servers" style="display:none">
+    <div class="container">
+      <div class="server-wrap">
+        <div class="server-hero">
+          <div class="sh-left" data-stagger>
+            <h2>媒体服务器适配器</h2>
+            <p>当前版本尚未接入 Emby、Jellyfin、Plex 或飞牛影视 API。</p>
+            <button class="btn btn-ghost" onclick="showView('cloud')">
+              使用已接入的媒体来源
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M9 6l6 6-6 6"></path></svg>
+            </button>
+          </div>
+        </div>
+        <div class="server-cards" data-stagger>
+          <div class="srv-card glass" aria-disabled="true">
+            <div class="srv-icon si-emby">▶</div>
+            <div class="srv-name">Emby</div>
+            <div class="srv-desc">未接入。不会请求服务器，也不会展示虚构媒体库。</div>
+          </div>
+          <div class="srv-card glass" aria-disabled="true">
+            <div class="srv-icon si-jelly">◈</div>
+            <div class="srv-name">Jellyfin</div>
+            <div class="srv-desc">未接入。待实现鉴权、媒体列表与播放地址解析。</div>
+          </div>
+          <div class="srv-card glass" aria-disabled="true">
+            <div class="srv-icon si-plex">➤</div>
+            <div class="srv-name">Plex</div>
+            <div class="srv-desc">未接入。待实现服务器发现、鉴权与媒体访问。</div>
+          </div>
+          <div class="srv-card glass" aria-disabled="true">
+            <div class="srv-icon si-fn">🎬</div>
+            <div class="srv-name">飞牛影视</div>
+            <div class="srv-desc">未接入。待实现设备 API 与真实播放链路。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 远程下载能力状态 ============ -->
+  <section class="view" id="view-downloads" style="display:none">
+    <div class="container">
+      <div class="dl-speed-banner glass" data-stagger>
+        <div class="dl-speed-title">
+          <h3><span style="color:var(--accent)">离线下载尚未接入</span></h3>
+          <p>当前没有下载任务 API、进度持久化或已完成文件索引，因此不创建虚构任务列表。</p>
+        </div>
+        <button class="btn btn-ghost" onclick="showView('library')">返回媒体库</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 个人中心与我的内容 ============ -->
+  <section class="view" id="view-profile">
+    <div class="container">
+      <div class="profile-grid">
+        <!-- 本机配置卡片 -->
+        <div class="vip-card" data-stagger>
+          <div class="vip-head">
+            <div class="vip-avatar">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a5 5 0 1 0 5 5 5 5 0 0 0-5-5zm0 12c-4.42 0-8 2.24-8 5v1h16v-1c0-2.76-3.58-5-8-5z"/></svg>
+            </div>
+            <span class="vip-badge-tag">本机配置档案</span>
+          </div>
+          <div class="vip-name">本机用户</div>
+          <div class="vip-exp">本机配置档案 · 未连接账户服务</div>
+          <div class="priv-list">
+            <div class="priv-item"><span>✓</span> 本地媒体库与 SQLite 索引</div>
+            <div class="priv-item"><span>✓</span> TVMaze 元数据刮削</div>
+            <div class="priv-item"><span>✓</span> MKV 浏览器兼容播放回退</div>
+            <div class="priv-item"><span>✓</span> libmpv 播放运行时检测</div>
+            <div class="priv-item"><span>·</span> 云端账户与跨设备同步未配置</div>
+          </div>
+          <button class="btn btn-accent" disabled style="width:100%;margin-top:24px;justify-content:center" title="账户服务尚未配置">账户服务未配置</button>
+        </div>
+
+        <!-- 概览栏：核心数据统计 + 影视设备与安全设置 -->
+        <div class="profile-overview-col" data-stagger>
+          <!-- 统计数据看板 -->
+          <div class="stats-banner">
+            <div class="stat-box glass">
+              <div class="stat-icon" style="background:rgba(56,189,248,.15);color:#38bdf8">⏱</div>
+              <div class="stat-info">
+                <b id="myWatchHours">—</b>
+                <span>等待读取真实观看记录</span>
+              </div>
+            </div>
+            <div class="stat-box glass">
+              <div class="stat-icon" style="background:rgba(255,95,107,.15);color:#ff5f6b">❤</div>
+              <div class="stat-info">
+                <b id="myFavoriteCount">—</b>
+                <span>等待读取本机收藏</span>
+              </div>
+            </div>
+            <div class="stat-box glass">
+              <div class="stat-icon" style="background:rgba(16,185,129,.15);color:#10b981">📥</div>
+              <div class="stat-info">
+                <b id="myLibrarySize">—</b>
+                <span>媒体大小统计尚未返回</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 设备管理与账户偏好 -->
+          <div class="profile-settings-grid">
+            <div class="set-card glass">
+              <div class="set-head">
+                <span class="si"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 6h16v10H4zM2 18h20v2H2z"/></svg></span>
+                <h3>本机影视设备</h3>
+              </div>
+              <div class="devices-sec">
+                <div class="device-card glass-deep">
+                  <div class="dev-icon">🖥</div>
+                  <div class="dev-info"><b>当前桌面窗口</b><small>● 在线 · 本机运行</small></div>
+                </div>
+                <div class="device-card glass-deep">
+                  <div class="dev-icon">＋</div>
+                  <div class="dev-info"><b>未连接其他设备</b><small style="color:var(--text-faint)">跨设备同步服务未配置</small></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="set-card glass">
+              <div class="set-head">
+                <span class="si"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></span>
+                <h3>账户与安全</h3>
+              </div>
+              <div class="set-row"><span class="k">用户 ID</span><b>本机未登录</b></div>
+              <div class="set-row"><span class="k">云端同步与备份</span><div class="switch" aria-disabled="true" title="云端账户服务尚未配置"></div></div>
+              <div class="set-row"><span class="k">多房间跨屏投送</span><div class="switch" aria-disabled="true" title="跨设备投送服务尚未配置"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 继续观看 · 历史播放进度 -->
+      <div class="section-title" style="--accent:#38bdf8;margin-top:12px" data-stagger data-word-pull>继续观看 · 历史播放进度</div>
+      <div class="continue-grid" id="continueGrid" data-stagger>
+        <p class="catalog-empty">暂无播放记录；播放过的真实媒体会出现在这里。</p>
+      </div>
+
+      <!-- 我的追剧与想看 (Watchlist) -->
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px" data-stagger>
+        <div class="section-title" style="--accent:#ff5f6b" data-word-pull>我的追剧与想看 (Watchlist)</div>
+        <button class="btn btn-ghost" style="padding:6px 14px;font-size:12px" onclick="showView('library')">去媒体库探索 ＋</button>
+      </div>
+      <div class="grid" id="myWatchlistGrid" data-stagger></div>
+    </div>
+  </section>
+
+  <!-- ============ 硬件状态与系统日志 ============ -->
+  <section class="view" id="view-logs">
+    <div class="container">
+      <div class="stats-banner" data-stagger>
+        <div class="stat-box glass">
+          <div class="stat-icon" style="background:rgba(56,189,248,.15);color:#38bdf8">⚡</div>
+          <div class="stat-info"><b>—</b><span>等待桌面端运行时诊断</span></div>
+        </div>
+        <div class="stat-box glass">
+          <div class="stat-icon" style="background:rgba(61,220,132,.15);color:#3ddc84">📊</div>
+          <div class="stat-info"><b>— <small style="font-size:14px">FPS</small></b><span>开始播放后记录实时帧率</span></div>
+        </div>
+        <div class="stat-box glass">
+          <div class="stat-icon" style="background:rgba(255,207,94,.15);color:#ffcf5e">🧠</div>
+          <div class="stat-info"><b>— <small style="font-size:14px">GB</small></b><span>桌面端未返回显存采样</span></div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px" data-stagger>
+        <div class="section-title" style="--accent:#38bdf8">运行时诊断与刮削日志</div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-ghost" style="padding:6px 12px;font-size:12px" onclick="clearLogs()">清空日志</button>
+          <button class="btn btn-ghost" style="padding:6px 12px;font-size:12px" onclick="exportLogs()">导出日志</button>
+        </div>
+      </div>
+      <div class="log-terminal glass-deep" id="logTerminal" data-stagger>
+        <div class="log-line"><span class="log-time">[启动]</span><span class="log-tag info">INFO</span><span class="log-msg">等待桌面端运行时事件。</span></div>
+        <div class="log-line"><span class="log-time">[提示]</span><span class="log-tag info">INFO</span><span class="log-msg">扫描媒体目录、连接来源或开始播放后，真实诊断会显示在这里。</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 回收站与数据恢复 ============ -->
+  <section class="view" id="view-trash">
+    <div class="container">
+      <div class="section-title" style="--accent:#ff5f6b" data-stagger>回收站能力状态</div>
+      <div style="padding:44px 24px;border:1px dashed var(--stroke);border-radius:var(--r-lg);text-align:center;color:var(--text-dim)" class="glass" data-stagger>
+        <div style="font-size:42px;margin-bottom:12px">🗑</div>
+        <h3 style="font-size:16px;color:#fff;margin-bottom:6px">软删除与恢复尚未接入</h3>
+        <p style="font-size:12.5px;color:var(--text-faint)">当前后端没有提供回收站查询、保留期限或恢复接口，因此这里不会显示虚构删除记录。</p>
+        <button class="btn btn-ghost" style="margin-top:20px" onclick="showView('library')">返回媒体库</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 设置 ============ -->
+  <section class="view" id="view-settings">
+    <div class="container">
+      <div class="set-grid">
+        <div class="set-card glass" data-stagger>
+          <div class="set-head"><span class="si"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5z"></path></svg></span><h3>播放体验</h3></div>
+          <div class="set-row"><span class="k">兼容转码</span><span class="ver-chip" title="由当前媒体编码与运行时能力自动判断">播放时自动判断</span></div>
+          <div class="set-row"><span class="k">详情预加载</span><span class="ver-chip" aria-disabled="true">未提供独立设置</span></div>
+          <div class="set-row"><span class="k">启动默认页面</span><span class="ver-chip">首页（当前固定）</span></div>
+          <div class="set-row"><span class="k">解码内核</span>
+            <span class="ver-chip" title="桌面端检测 libmpv；不可用时回退浏览器播放链路">运行时自动选择</span>
+          </div>
+        </div>
+        <div class="set-card glass" data-stagger>
+          <div class="set-head"><span class="si"><svg viewBox="0 0 24 24" fill="none" stroke="#a8d4ff" stroke-width="1.8"><path d="M4 7h16M4 12h16M4 17h10"></path></svg></span><h3>元数据与刮削</h3></div>
+          <div class="set-row"><span class="k">TMDB 密钥（电影）</span>
+            <div style="display:flex;align-items:center;gap:10px">
+              <span id="tmdbStatusText" style="font-size:13px;color:var(--text-dim)">未读取</span>
+              <button class="btn btn-ghost" style="padding:5px 10px;font-size:11.5px" onclick="configureTmdbToken()">配置密钥</button>
+            </div>
+          </div>
+          <div class="set-row"><span class="k">封面本地缓存</span>
+            <span class="ver-chip" title="刮削时自动把正常视频海报下载到本地，离线也能显示封面">刮削时自动缓存</span>
+          </div>
+          <div class="set-row"><span class="k">全库重新刮削</span>
+            <div style="display:flex;align-items:center;gap:10px">
+              <span style="font-size:12px;color:var(--text-faint)">用已启用的平台重新匹配所有未刮削条目，补全缺失的海报与简介</span>
+              <button class="btn btn-ghost" id="rescrapeLibraryBtn" style="padding:5px 10px;font-size:11.5px" onclick="rescrapeLibraryFromSettings()">重新刮削</button>
+            </div>
+          </div>
+          <div class="set-row"><span class="k">18+ 隔离修复</span>
+            <div style="display:flex;align-items:center;gap:10px">
+              <span style="font-size:12px;color:var(--text-faint)">重新扫描影视库，把文件名带番号或 18+ 标记的遗漏内容移入隔离区</span>
+              <button class="btn btn-ghost" id="reclassifyAdultBtn" style="padding:5px 10px;font-size:11.5px" onclick="reclassifyAdultLibrary()">重新隔离</button>
+            </div>
+          </div>
+          <div class="set-row"><span class="k">18+ 误判清除</span>
+            <div style="display:flex;align-items:center;gap:10px">
+              <span style="font-size:12px;color:var(--text-faint)">按当前规则重建 18+ 标记，把被误判的正常视频移出隔离区（不影响手动标记与已刮削条目）</span>
+              <button class="btn btn-ghost" id="rebuildAdultBtn" style="padding:5px 10px;font-size:11.5px" onclick="rebuildAdultLibrary()">清除误判</button>
+            </div>
+          </div>
+        </div>
+        <div class="set-card glass" data-stagger>
+          <div class="set-head"><span class="si"><svg viewBox="0 0 24 24" fill="none" stroke="#a8d4ff" stroke-width="1.8"><path d="M12 3l2.5 5 5.5.8-4 3.9.9 5.5-4.9-2.6-4.9 2.6.9-5.5-4-3.9L9.5 8z"></path></svg></span><h3>外观与个性化</h3></div>
+          <div class="set-row">
+            <span class="k">主题强调色</span>
+            <div class="theme-colors">
+              <span class="theme-dot active" style="background:#38bdf8;color:#38bdf8" onclick="setThemeAccent('#38bdf8','rgba(56,189,248,.35)',this)"></span>
+              <span class="theme-dot" style="background:#a855f7;color:#a855f7" onclick="setThemeAccent('#a855f7','rgba(168,85,247,.35)',this)"></span>
+              <span class="theme-dot" style="background:#eab308;color:#eab308" onclick="setThemeAccent('#eab308','rgba(234,179,8,.35)',this)"></span>
+              <span class="theme-dot" style="background:#10b981;color:#10b981" onclick="setThemeAccent('#10b981','rgba(16,185,129,.35)',this)"></span>
+              <span class="theme-dot" style="background:#f43f5e;color:#f43f5e" onclick="setThemeAccent('#f43f5e','rgba(244,63,94,.35)',this)"></span>
+            </div>
+          </div>
+          <div class="set-row"><span class="k">默认弹幕源</span>
+            <div class="set-select" onclick="toast('当前未配置弹幕源')">未配置弹幕源 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"></path></svg></div>
+          </div>
+          <div class="set-row"><span class="k">字幕匹配</span>
+            <div class="set-select" onclick="toast('字幕匹配会跟随当前媒体的真实字幕轨道')">跟随媒体字幕轨道 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"></path></svg></div>
+          </div>
+          <div class="set-row"><span class="k">OpenSubtitles API Key</span>
+            <button class="btn btn-ghost" style="padding:5px 10px;font-size:11.5px" onclick="configureSubtitleCredentials()">配置凭据</button>
+          </div>
+        </div>
+        <div class="set-card glass" data-stagger>
+          <div class="set-head"><span class="si"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2 4.5 13.5H11L9.5 22 19 9.5h-6.5z"></path></svg></span><h3>性能与缓存</h3></div>
+          <div class="set-row"><span class="k">硬件加速策略</span><span class="ver-chip">按运行时能力自动回退</span></div>
+          <div class="set-row"><span class="k">应用内代理</span><span class="ver-chip" aria-disabled="true">未提供独立设置</span></div>
+          <div class="set-row">
+            <span class="k">缓存占用</span>
+            <div style="display:flex;align-items:center;gap:10px">
+              <span id="cacheSizeText" style="font-size:13px;color:var(--text-dim)">未读取</span>
+              <button class="btn btn-ghost" style="padding:4px 12px;font-size:11.5px" onclick="cleanCache()">清理缓存</button>
+            </div>
+          </div>
+        </div>
+        <div class="set-card glass" data-stagger>
+          <div class="set-head"><span class="si"><svg viewBox="0 0 24 24" fill="none" stroke="#a8d4ff" stroke-width="1.8"><rect x="3" y="4" width="18" height="14" rx="2"></rect><path d="M8 21h8"></path></svg></span><h3>系统</h3></div>
+          <div class="set-row"><span class="k">检查更新</span><span class="ver-chip" aria-disabled="true" title="当前版本没有配置在线更新地址">未配置更新源</span></div>
+          <div class="set-row"><span class="k">关于 TTV Cinema</span>
+            <div class="set-select" onclick="openAboutModal()">查看 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 6 6 6-6 6"></path></svg></div>
+          </div>
+        </div>
+      </div>
+      <div class="guide-banner" data-stagger>
+        <div class="guide-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5z"></path></svg></div>
+        <div>
+          <h3>媒体来源</h3>
+          <p>查看当前可配置的本地目录、OpenList 与云盘适配器状态</p>
+        </div>
+        <button class="btn btn-ghost" onclick="showView('cloud')">查看来源 →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 深夜档 · 18+ 隔离区（隐藏入口：连续点击 Logo 6 次） ============ -->
+  <section class="view" id="view-adult">
+    <div class="container">
+      <div class="adult-topbar glass-deep" data-stagger>
+        <div class="adult-brand">
+          <span class="adult-logo" aria-hidden="true">
+            <img src="/assets/ttv-light-curtain-night-mark.svg" alt="">
+          </span>
+          <div class="adult-brand-text">
+            <h2>深夜档</h2>
+            <small>ADULTS ONLY · 私密隐藏页 · 不出现在常规导航与历史记录</small>
+          </div>
+          <span class="adult-age-badge">18+</span>
+        </div>
+        <div class="adult-stats">
+          <div class="adult-stat"><b id="adultStatTotal">0</b><span>作品总数</span></div>
+          <div class="adult-stat"><b id="adultStatScraped">0</b><span>已刮削</span></div>
+          <div class="adult-stat"><b id="adultStatMissing">0</b><span>待补全</span></div>
+        </div>
+        <button class="btn btn-ghost adult-exit-btn" onclick="exitAdultZone()" title="退出深夜档，返回常规界面">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><path d="M16 17l5-5-5-5"></path><path d="M21 12H9"></path></svg>
+          退出深夜档
+        </button>
+      </div>
+
+      <div class="adult-zone-switch" data-stagger>
+        <button type="button" class="zone-btn active" data-adult-zone="library">本地片库</button>
+        <button type="button" class="zone-btn" data-adult-zone="cinema">糖心影院</button>
+      </div>
+
+      <div class="adult-toolbar adult-toolbar-library" data-stagger>
+        <div class="adult-toolbar-center">
+          <label class="adult-search-box" title="搜索番号、标题或演员">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg>
+            <input id="adultSearch" type="search" placeholder="搜索番号、标题、演员、标签、厂商..." autocomplete="off">
+          </label>
+        </div>
+        <div class="adult-toolbar-actions">
+          <select class="sort-select" id="adultSort" aria-label="深夜档排序">
+            <option value="release">📅 发行日期</option>
+            <option value="added">⏱️ 入库时间</option>
+            <option value="title">🔤 标题排序</option>
+            <option value="duration">⌛ 时长优先</option>
+          </select>
+          <button class="btn btn-accent adult-scrape-btn" id="adultScrapeBtn" onclick="scrapeMissingAdult()" title="使用 JavBus / JavDB / Avmoo / JavLibrary / Jav321 补全缺失的番号元数据与封面">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4v5h5"></path><path d="M20 20v-5h-5"></path><path d="M5.1 15a7 7 0 0 0 11.8 2L20 15"></path><path d="M18.9 9A7 7 0 0 0 7.1 7L4 9"></path></svg>
+            <span>刮削缺失项</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="adult-filters" id="adultFilters" data-stagger></div>
+
+      <div class="adult-grid" id="adultGrid"></div>
+
+      <!-- ============ 糖心影院 · 在线目录（只读浏览，点击开映才取线路） ============ -->
+      <div id="txCinema" hidden>
+        <div class="tx-toolbar">
+          <label class="adult-search-box" title="搜索糖心影片或创作者">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg>
+            <input id="txSearchInput" type="search" placeholder="搜索糖心影片、创作者..." autocomplete="off">
+          </label>
+          <select class="sort-select" id="txOrderSelect" aria-label="糖心排序">
+            <option value="new">最新上架</option>
+            <option value="hot">热门推荐</option>
+            <option value="click">播放最多</option>
+            <option value="love">喜欢最多</option>
+            <option value="score">评分最高</option>
+          </select>
+          <select class="sort-select" id="txPaySelect" aria-label="糖心权益筛选">
+            <option value="">全部权益</option>
+            <option value="free">免费</option>
+            <option value="vip">VIP</option>
+          </select>
+          <select class="sort-select" id="txCanvasSelect" aria-label="画幅筛选">
+            <option value="">全部画幅</option>
+            <option value="long">竖屏</option>
+            <option value="short">横屏</option>
+          </select>
+          <button type="button" class="btn btn-accent" id="txSearchBtn">搜索</button>
+          <button type="button" class="btn btn-ghost" id="txDiscoverBtn">返回发现</button>
+          <button type="button" class="btn btn-ghost" id="txAccountsBtn" title="糖心账号池：账号密码登录或导入共享凭证，开映自动轮换观看完整时长">账号池<span class="tx-account-count" id="txAccountCount" hidden></span></button>
+        </div>
+        <div class="tx-status" id="txStatus" hidden></div>
+        <div class="tx-accounts" id="txAccountsPanel" hidden>
+          <div class="tx-accounts-head">
+            <h4>账号池</h4>
+            <p class="tx-accounts-hint">开映时自动轮换账号观看完整时长；金币内容会先征求确认再解锁。群内共享的 token/deviceId 凭证可直接导入。</p>
+            <button type="button" class="btn btn-ghost" id="txAccountsClose">收起</button>
+          </div>
+          <div class="tx-cloud-bar">
+            <select class="sort-select" id="txCloudMode" aria-label="账号来源">
+              <option value="cloud">云端轮班 · 自动选号</option>
+              <option value="cloud-first">云端优先 · 失败转本地</option>
+              <option value="local">本地值班 · 只用本地账号</option>
+            </select>
+            <button type="button" class="btn btn-ghost" id="txCloudSyncBtn">同步云端池</button>
+            <span class="tx-cloud-status" id="txCloudStatus"></span>
+          </div>
+          <div class="tx-account-list" id="txAccountList"></div>
+          <div class="tx-account-form" id="txAccountForm">
+            <div class="tx-account-form-row">
+              <select class="sort-select" id="txAccountMode" aria-label="凭据类型">
+                <option value="password">账号密码</option>
+                <option value="token">token 凭证</option>
+                <option value="qrcode">二维码凭证</option>
+              </select>
+              <input type="text" id="txAccountLabel" placeholder="备注昵称（可选）" autocomplete="off">
+            </div>
+            <div class="tx-account-form-row" data-txfield="password">
+              <input type="text" id="txAccountUsername" placeholder="站点账号" autocomplete="off">
+              <input type="password" id="txAccountPassword" placeholder="站点密码" autocomplete="new-password">
+            </div>
+            <div class="tx-account-form-row" data-txfield="token" hidden>
+              <input type="text" id="txAccountDeviceId" placeholder="deviceId，如 web_xxxxxxxxxxxxx" autocomplete="off">
+              <input type="text" id="txAccountUserToken" placeholder="userToken（token_userid 组合凭证）" autocomplete="off">
+            </div>
+            <div class="tx-account-form-row" data-txfield="qrcode" hidden>
+              <input type="text" id="txAccountQrcode" placeholder="二维码凭证 code" autocomplete="off">
+            </div>
+            <div class="tx-account-form-actions">
+              <button type="button" class="btn btn-accent" id="txAccountSaveBtn">保存并验证</button>
+              <span class="tx-account-form-msg" id="txAccountFormMsg"></span>
+            </div>
+          </div>
+        </div>
+        <div id="txSections"></div>
+        <div class="tx-grid" id="txGrid"></div>
+        <div class="tx-more-row" id="txMoreRow" hidden>
+          <button type="button" class="btn btn-ghost" id="txLoadMoreBtn">加载更多</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- 深夜档进出场过渡遮罩 -->
+<div class="adult-transition" id="adultTransition" aria-hidden="true">
+  <div class="adult-transition-glow"></div>
+  <div class="adult-transition-label">18+</div>
+</div>
+
+<!-- 糖心影院详情弹层 -->
+<div class="tx-detail-overlay" id="txDetailOverlay" hidden>
+  <div class="tx-detail-panel glass-deep">
+    <button type="button" class="tx-detail-close" id="txDetailClose" aria-label="关闭详情">×</button>
+    <div class="tx-detail-body">
+      <div class="tx-detail-poster" id="txDetailPosterWrap"><img id="txDetailPoster" alt=""></div>
+      <div class="tx-detail-info">
+        <h3 id="txDetailTitle"></h3>
+        <p class="tx-detail-meta" id="txDetailMeta"></p>
+        <p class="tx-detail-desc" id="txDetailDesc"></p>
+        <div class="tx-detail-tags" id="txDetailTags"></div>
+        <div class="tx-detail-actions">
+          <button type="button" class="btn btn-accent" id="txPlayBtn">▶ 开映</button>
+          <span class="tx-play-hint" id="txPlayHint"></span>
+        </div>
+      </div>
+    </div>
+    <div class="tx-detail-groups" id="txDetailGroups" hidden>
+      <h4>选集</h4>
+      <div class="tx-group-list" id="txGroupList"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 播放器全屏视图（TVV BOX 沉浸式版本） ============ -->
+<section id="view-player">
+  <div class="tvv-player-bg player-bg" id="playerBackdrop" style="background-image:url('/assets/player-still.jpg')"></div>
+  <video class="tvv-player-video" id="playerVideo" playsinline preload="auto"></video>
+  <div class="tvv-player-shade player-shade"></div>
+  <div class="player-loading-state" id="playerLoadingState" aria-live="polite">
+    <div class="player-loading-card">
+      <div class="player-loading-orbit" aria-hidden="true"><i></i></div>
+      <div class="player-loading-copy">
+        <b id="playerLoadingText">正在连接…</b>
+        <ul class="player-loading-log" id="playerLoadingLog"></ul>
+      </div>
+    </div>
+  </div>
+  <div class="short-drama-next-notice" id="shortDramaNextNotice" aria-live="polite" aria-hidden="true">
+    <b id="shortDramaNextTitle">本集播放完成</b>
+    <span><em id="shortDramaNextSeconds">5</em> 秒后进入下一集</span>
+  </div>
+  <video id="shortDramaBufferVideo" class="short-drama-buffer-video" muted playsinline preload="auto" aria-hidden="true" tabindex="-1"></video>
+  <div class="danmaku-stage" id="danmakuStage"></div>
+  <div class="player-ui" id="playerUi">
+    <div class="tvv-player-header">
+      <button class="tvv-title-pill" onclick="closePlayer()">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 18l-6-6 6-6"/></svg>
+        <span id="pBackTitle">媒体预览</span>
+      </button>
+      <div class="tvv-window-actions">
+        <button onclick="togglePinPlayerWindow(this)" id="btnPinWindow" title="窗口置顶" aria-label="窗口置顶"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3h6v6l3 4H6l3-4V3z"/><path d="M12 13v8"/></svg></button>
+        <i></i>
+        <button onclick="minimizeWindow()" title="最小化" aria-label="最小化"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/></svg></button>
+        <button onclick="toggleMaximizeWindow()" title="窗口最大化 / 还原" aria-label="窗口最大化"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg></button>
+        <button onclick="closePlayer()" title="关闭播放器" aria-label="关闭"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+      </div>
+    </div>
+    <div class="tvv-player-stage">
+      <aside class="tvv-monitor fps-panel" id="fpsPanel" style="display:none">
+        <div class="tvv-monitor-head">
+          <span><span class="live-dot"></span>实时帧率监控</span>
+          <button aria-disabled="true" title="由当前视频帧统计自动更新">实时统计</button>
+        </div>
+        <div class="tvv-monitor-data">
+          <span>片源标称 <b id="fpsMedia">—</b></span>
+          <span>实际帧率 <b id="fpsActual" class="green">—</b></span>
+          <span>解码帧率 <b id="fpsDecode">—</b></span>
+          <span>显示刷新 <b id="fpsDisplay">—</b></span>
+          <span>补帧状态 <b id="fpsIns" class="green">未配置</b></span>
+          <span>渲染丢帧 <b class="gold" id="fpsDrops">0</b></span>
+        </div>
+      </aside>
+      <aside class="tvv-info-card">
+        <div class="tvv-info-poster" id="pInfoPoster" style="background-image:linear-gradient(180deg,transparent 45%,rgba(10,12,16,.92)),url('/assets/detail-poster.jpg')"></div>
+        <div class="tvv-info-copy">
+          <h2 id="pInfoTitle">媒体预览</h2>
+          <p id="pInfoDesc">正在加载公开影视目录中的真实条目。</p>
+          <!-- 来源/播放状态行：app-runtime.js pSource 写入点（含"播放失败 · 原因"） -->
+          <p class="tvv-info-source" id="pSource">媒体来源待加载</p>
+          <small class="tvv-subtitle-state" id="pSubtitleModeText">字幕列表</small>
+          <div class="tvv-quick-grid">
+            <button onclick="openSubtitleModal(event)"><svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm-9 9H5.5v-2H11v2zm7 0h-5.5v-2H18v2zm-7 4H5.5v-2H11v2zm7 0h-5.5v-2H18v2z"/></svg>字幕</button>
+            <button onclick="openAudioTrackModal(event)"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13M9 18a3 3 0 1 1-6 0 3 3 0 0 1 6 0zm12 0a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/></svg>音轨</button>
+            <button onclick="playPrevEpisode()"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 20L9 12l10-8v16zM5 19V5"/></svg>上一集</button>
+            <button onclick="playNextEpisode()"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 4l10 8-10 8V4zM19 5v14"/></svg>下一集</button>
+            <button onclick="openEpisodePickerModal(event)"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>选集</button>
+          </div>
+        </div>
+      </aside>
+      <aside class="tvv-audio-panel player-popover-surface tvv-audio-hidden" id="audioPanel" role="dialog" aria-label="音效与声场" aria-hidden="true">
+        <header>
+          <b>音效处理器</b>
+          <button class="ap-close" type="button" onclick="toggleAudioPanel()" aria-label="关闭音效面板">×</button>
+        </header>
+        <button class="tvv-audio-row" type="button" onclick="openAudioTrackModal(event)">
+          <span><small>音轨</small><b id="pAudioModeText">自动</b></span>
+        </button>
+        <button class="tvv-audio-row" type="button" onclick="openAudioDeviceModal(event)">
+          <span><small>输出设备</small><b id="pAudioDeviceText">系统默认</b></span>
+        </button>
+        <button class="tvv-audio-row" type="button" onclick="openChannelMapModal(event)">
+          <span><small>声道布局</small><b id="pChannelMapText">跟随片源</b></span>
+        </button>
+        <div class="ap-label">声场预设 <b id="pAudioPresetText">原声</b></div>
+        <div class="ap-presets">
+          <button class="ap-chip active" type="button" onclick="pickAudioPreset(this, 'off')">原声</button>
+          <button class="ap-chip" type="button" onclick="pickAudioPreset(this, 'movie')">电影</button>
+          <button class="ap-chip" type="button" onclick="pickAudioPreset(this, 'music')">音乐</button>
+          <button class="ap-chip" type="button" onclick="pickAudioPreset(this, 'night')">夜听</button>
+          <button class="ap-chip" type="button" onclick="pickAudioPreset(this, 'voice')">人声</button>
+          <button class="ap-chip" type="button" onclick="pickAudioPreset(this, 'surround')">环绕</button>
+        </div>
+        <button class="btn btn-accent ap-apply" type="button" onclick="toggleAudioPanel()">完成</button>
+      </aside>
+    </div>
+    <button class="tvv-lock" id="playerLockBtn" onclick="togglePlayerLock(event)" aria-label="锁定屏幕" title="锁定屏幕 (隐藏所有控件)">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 9.9-1"></path></svg>
+    </button>
+    <div class="tvv-bottom-wrap p-bottom">
+      <div class="island-container" id="playerIsland">
+
+        <!-- 第 1 层：时间轨与信息标签，两端顶格包裹 -->
+        <div class="island-track-row">
+          <div class="island-title-tag">
+            <b id="pTitle">媒体预览</b>
+            <span id="pSourceTag">公开目录</span>
+          </div>
+          <span class="p-time time-label" id="tCur">00:00</span>
+          <div class="island-slider p-progress" id="pBar">
+            <div class="island-slider-fill p-fill" id="pFill" style="width:0%">
+              <div class="island-slider-thumb"></div>
+            </div>
+            <div class="player-seek-preview" id="playerSeekPreview" aria-hidden="true">
+              <canvas id="playerSeekPreviewCanvas" width="224" height="126"></canvas>
+              <span id="playerSeekPreviewTime">00:00</span>
+            </div>
+          </div>
+          <span class="p-time time-label" id="tTotal">00:00</span>
+        </div>
+
+        <!-- 第 2 层：精简微胶囊按键带 -->
+        <div class="island-controls-row">
+
+          <!-- 左侧播放传输组：上一集、主播放/暂停、下一集 (快退快进已移除) -->
+          <div class="island-group">
+            <button class="icon-btn pc-btn" title="上一集" aria-label="上一集" onclick="playPrevEpisode()">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 20L9 12l10-8v16zM5 19V5"/></svg>
+            </button>
+            <button class="icon-btn play-master pc-btn main" title="播放 / 暂停" onclick="togglePlay()">
+              <svg id="playIcon" viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                <path d="M7 5h4v14H7zM13 5h4v14h-4z"/>
+              </svg>
+            </button>
+            <button class="icon-btn pc-btn" title="下一集" aria-label="下一集" onclick="playNextEpisode()">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 4l10 8-10 8V4zM19 5v14"/></svg>
+            </button>
+          </div>
+
+          <div class="island-divider"></div>
+
+          <!-- 中间功能组：把播放相关功能直接放到控制栏，避免二级菜单遮挡画面 -->
+          <div class="island-group">
+
+            <!-- 选集按钮与垂直向上展开弹窗 -->
+            <div class="dropdown-anchor">
+              <button class="chip-btn pc-chip" id="btnEpisode" onclick="toggleEpisodePicker(event)" aria-haspopup="dialog" aria-expanded="false" aria-controls="epPickerPopover">
+                <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+                选集
+              </button>
+              <div class="ep-popover-menu player-popover-surface" id="epPickerPopover" role="dialog" aria-label="剧集选择" aria-hidden="true">
+                <div class="ep-head">
+                  <span>剧集选择</span>
+                  <span id="epPickerActiveLabel" style="font-size:11px;color:var(--accent);font-weight:700">正在播放</span>
+                </div>
+                <div class="ep-grid" id="epPickerGrid">
+                  <!-- 动态由 app-runtime.js 渲染 -->
+                </div>
+              </div>
+            </div>
+
+            <button class="chip-btn pc-chip" id="chipWatchlist" onclick="togglePlayerWatchlist(this)">
+              <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+              追剧
+            </button>
+            <button class="icon-btn pc-btn" id="btnAudioTracks" title="音轨" aria-label="音轨" aria-haspopup="dialog" aria-expanded="false" aria-controls="playerActionPopover" onclick="openAudioTrackModal(event)">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13M9 18a3 3 0 1 1-6 0 3 3 0 0 1 6 0zm12 0a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/></svg>
+            </button>
+            <button class="icon-btn pc-btn" id="btnSubtitles" title="字幕" aria-label="字幕" aria-haspopup="dialog" aria-expanded="false" aria-controls="playerActionPopover" onclick="openSubtitleModal(event)">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="14" rx="3"/><path d="M7 8h6M7 12h10"/></svg>
+            </button>
+            <button class="icon-btn pc-btn" id="btnAudioEffects" title="音效与声场" aria-label="音效与声场" aria-haspopup="dialog" aria-expanded="false" aria-controls="audioPanel" onclick="toggleAudioPanel(event)">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 10v4M8 7v10M12 4v16M16 7v10M20 10v4"/></svg>
+            </button>
+            <button class="icon-btn pc-btn" id="chipFps" title="实时帧率监控" aria-label="实时帧率监控" onclick="toggleFpsPanel()">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            </button>
+            <button class="chip-btn pc-chip" id="chipRife" title="实时补帧（立即生效，不中断播放）" onclick="toggleRife(this)">
+              <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+              <span class="chip-label">补帧</span>
+            </button>
+            <button class="chip-btn pc-chip" id="chipUai" title="实时超分" onclick="toggleAiUpscale(this)">
+              <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H3v5M16 3h5v5M8 21H3v-5M16 21h5v-5"/><path d="M9 9h6v6H9z"/></svg>
+              超分
+            </button>
+            <button class="chip-btn pc-chip" id="chipDanmaku" title="实时弹幕" onclick="toggleDanmakuFromIsland()">
+              <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="14" rx="3"/><path d="M7 8h6M7 12h10"/></svg>
+              弹幕
+            </button>
+
+          </div>
+
+          <div class="island-divider"></div>
+
+          <!-- 右侧模式与设置组：倍速 (垂直展开)、画质 (垂直展开)、音量微胶囊、高级滤镜、画中画、全屏 (HDR已移除) -->
+          <div class="island-group">
+
+            <!-- 倍速选择 (垂直展开) -->
+            <div class="dropdown-anchor">
+              <button class="chip-btn pc-chip" id="chipSpeed" onclick="toggleSpeedMenu(event)" aria-haspopup="listbox" aria-expanded="false" aria-controls="speedMenuPopover">
+                <span class="chip-label">1.0x</span>
+              </button>
+              <div class="popover-menu speed-popover player-popover-surface" id="speedMenuPopover" role="listbox" aria-label="播放速度" aria-hidden="true">
+                <div class="popover-opt" onclick="selectSpeedDirect('2.0x')">2.0x</div>
+                <div class="popover-opt" onclick="selectSpeedDirect('1.5x')">1.5x</div>
+                <div class="popover-opt" onclick="selectSpeedDirect('1.25x')">1.25x</div>
+                <div class="popover-opt active" onclick="selectSpeedDirect('1.0x')">1.0x</div>
+                <div class="popover-opt" onclick="selectSpeedDirect('0.75x')">0.75x</div>
+                <div class="popover-opt" onclick="selectSpeedDirect('0.5x')">0.5x</div>
+              </div>
+            </div>
+
+            <!-- 画质选择 (垂直展开) -->
+            <div class="dropdown-anchor">
+              <button class="chip-btn pc-chip" id="chipQuality" onclick="toggleQualityMenu(event)" aria-haspopup="listbox" aria-expanded="false" aria-controls="qualityMenuPopover">
+                自动
+              </button>
+              <div class="popover-menu quality-popover player-popover-surface" id="qualityMenuPopover" role="listbox" aria-label="视频画质" aria-hidden="true">
+                <div class="popover-opt" style="pointer-events:none;opacity:.72">正在读取真实画质</div>
+              </div>
+            </div>
+
+            <!-- 音量调节：垂直向上展开悬浮微胶囊 (对标截图) -->
+            <div class="dropdown-anchor volume-dropdown-anchor" id="playerVolumeControl">
+              <button class="icon-btn pc-btn player-volume-button" id="playerMuteBtn" title="音量 / 静音" aria-label="音量" onclick="togglePlayerMute()">
+                <svg id="playerVolumeIcon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M11 5L6 9H2v6h4l5 4V5z"/>
+                  <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>
+                </svg>
+              </button>
+              <div class="volume-popover-menu player-popover-surface" id="volumePopover" onpointerdown="startVolumeDrag(event)">
+                <span class="volume-val-text" id="playerVolumeValue">100</span>
+                <div class="volume-slider-vertical" id="playerVolumeTrack">
+                  <div class="volume-slider-bar" id="volumeSliderBar" style="height:100%">
+                    <div class="volume-slider-thumb" id="volumeSliderThumb"></div>
+                  </div>
+                </div>
+              </div>
+              <input id="playerVolumeRange" type="range" min="0" max="100" step="1" value="100" style="display:none" aria-hidden="true">
+            </div>
+
+            <button class="icon-btn pc-btn" id="btnVideoEnhance" title="高级画质与色彩滤镜" aria-label="画质增强" aria-haspopup="dialog" aria-expanded="false" aria-controls="playerActionPopover" onclick="openVideoEnhanceModal(event)">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M12 3a9 9 0 0 1 0 18"/></svg>
+            </button>
+            <button class="icon-btn pc-btn" id="btnPip" title="画中画模式" onclick="togglePipMode()">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><rect x="12" y="10" width="8" height="6" rx="1" fill="currentColor" fill-opacity="0.3"/></svg>
+            </button>
+            <button class="icon-btn pc-btn" id="btnFullscreen" title="全屏沉浸播放" onclick="toggleFullscreen()">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <div class="player-action-popover player-popover-surface" id="playerActionPopover" role="dialog" aria-modal="false" aria-hidden="true" onclick="event.stopPropagation()">
+      <header class="player-action-popover-head">
+        <div>
+          <b id="playerActionPopoverTitle">播放设置</b>
+          <small id="playerActionPopoverHint"></small>
+        </div>
+      </header>
+      <div class="player-action-popover-body" id="playerActionPopoverBody"></div>
+    </div>
+  </div>
+</section>
+
+<!-- FAB & Toast -->
+<button class="fab glass notification-trigger" type="button" title="通知提醒" aria-label="通知中心" aria-expanded="false" onclick="toggleNotificationPopover(event)">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.7 21a2 2 0 0 1-3.4 0"></path></svg>
+  <span class="notification-badge" aria-hidden="true"></span>
+</button>
+<aside class="notification-popover" id="notificationPopover" aria-label="通知中心" aria-hidden="true">
+  <div class="notification-popover-head">
+    <div><b>通知中心</b><span id="notificationRuntime">扫描与刮削任务</span></div>
+    <button class="notification-popover-close" type="button" onclick="closeNotificationPopover()" aria-label="收起通知中心">×</button>
+  </div>
+  <div id="notificationTaskList" class="notification-task-list"></div>
+  <div class="notification-popover-foot">
+    <button class="notification-clear-btn" type="button" onclick="clearFinishedScanTasks()">清除已完成</button>
+  </div>
+</aside>
+<div class="toast glass-deep" id="toast"></div>
+
+<!-- ============ 统一全局玻璃对话框 (Modal) ============ -->
+<div class="modal-backdrop" id="appModal" onclick="closeModal(event)">
+  <div class="modal-box glass-deep" onclick="event.stopPropagation()">
+    <div class="modal-head">
+      <h2 id="modalTitle">添加与配置</h2>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-foot" id="modalFoot"></div>
+  </div>
+</div>
+
+
+
+
+
+</body></html>

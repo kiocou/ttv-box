@@ -1,0 +1,68 @@
+{
+  "guangya": {
+    "accountBaseUrl": "https://account.guangyapan.com",
+    "apiBaseUrl": "https://api.guangyapan.com",
+    "deviceCodePath": "/v1/auth/device/code",
+    "tokenPath": "/v1/auth/token",
+    "clientId": null,
+    "oauthClientId": "aMe-8VSlkrbQXpUR",
+    "scope": null,
+    "deviceCodeGrantType": "urn:ietf:params:oauth:grant-type:device_code",
+    "refreshGrantType": "refresh_token",
+    "userAgent": null,
+    "headers": {}
+  },
+  "streamhub": {
+    "baseUrl": "http://127.0.0.1:18400",
+    "userAgent": "TTV/0.1 StreamHub adapter",
+    "autoStart": false,
+    "jarPath": null,
+    "javaPath": null
+  },
+  "oauth": {
+    "baidu": {
+      "authorizationEndpoint": "https://openapi.baidu.com/oauth/2.0/authorize",
+      "tokenEndpoint": "https://openapi.baidu.com/oauth/2.0/token",
+      "deviceCodeEndpoint": null,
+      "deviceCodeGrantType": null,
+      "refreshGrantType": "refresh_token",
+      "clientId": null,
+      "clientSecret": null,
+      "redirectUri": "http://127.0.0.1:49215/oauth/callback",
+      "scope": "basic,netdisk"
+    },
+    "aliyun": {
+      "authorizationEndpoint": "https://openapi.alipan.com/oauth/authorize",
+      "tokenEndpoint": "https://openapi.alipan.com/oauth/access_token",
+      "deviceCodeEndpoint": null,
+      "deviceCodeGrantType": null,
+      "refreshGrantType": "refresh_token",
+      "clientId": null,
+      "clientSecret": null,
+      "redirectUri": "http://127.0.0.1:49215/oauth/callback",
+      "scope": "user:base,file:read"
+    },
+    "cloud123": {
+      "authorizationEndpoint": "https://www.123pan.com/oauth/authorize",
+      "tokenEndpoint": "https://www.123pan.com/oauth/token",
+      "deviceCodeEndpoint": null,
+      "deviceCodeGrantType": null,
+      "refreshGrantType": "refresh_token",
+      "clientId": null,
+      "clientSecret": null,
+      "redirectUri": "http://127.0.0.1:49215/oauth/callback",
+      "scope": "file:read"
+    },
+    "tianyi": {
+      "authorizationEndpoint": "https://open.e.189.cn/api/logbox/oauth2/authorize",
+      "tokenEndpoint": "https://open.e.189.cn/api/logbox/oauth2/token",
+      "deviceCodeEndpoint": null,
+      "deviceCodeGrantType": null,
+      "refreshGrantType": "refresh_token",
+      "clientId": null,
+      "clientSecret": null,
+      "redirectUri": "http://127.0.0.1:49215/oauth/callback",
+      "scope": "file:read"
+    }
+  }
+}

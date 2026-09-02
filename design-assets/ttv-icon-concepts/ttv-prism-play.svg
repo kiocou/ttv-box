@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="none">
+  <defs>
+    <linearGradient id="shell" x1="182" y1="120" x2="844" y2="914" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#192538"/>
+      <stop offset="0.52" stop-color="#0B111D"/>
+      <stop offset="1" stop-color="#080B12"/>
+    </linearGradient>
+    <linearGradient id="prism" x1="292" y1="248" x2="758" y2="786" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#47D7FF"/>
+      <stop offset="0.48" stop-color="#5D6BFF"/>
+      <stop offset="1" stop-color="#A856F7"/>
+    </linearGradient>
+    <linearGradient id="rim" x1="220" y1="160" x2="790" y2="878" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFFFFF" stop-opacity="0.34"/>
+      <stop offset="0.35" stop-color="#7DDCFF" stop-opacity="0.12"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0.04"/>
+    </linearGradient>
+    <filter id="shadow" x="90" y="88" width="844" height="864" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="34" stdDeviation="34" flood-color="#000713" flood-opacity="0.76"/>
+    </filter>
+    <filter id="glow" x="182" y="158" width="660" height="716" filterUnits="userSpaceOnUse">
+      <feGaussianBlur stdDeviation="28"/>
+    </filter>
+  </defs>
+  <g filter="url(#shadow)">
+    <rect x="120" y="108" width="784" height="808" rx="226" fill="url(#shell)"/>
+    <rect x="121.5" y="109.5" width="781" height="805" rx="224.5" stroke="url(#rim)" stroke-width="3"/>
+    <path d="M214 280C270 174 371 138 512 138C671 138 785 204 836 324" stroke="#FFFFFF" stroke-opacity="0.08" stroke-width="22" stroke-linecap="round"/>
+  </g>
+  <path d="M342 274C342 236 385 213 417 233L748 442C798 474 798 550 748 582L417 791C385 811 342 788 342 750V274Z" fill="#5467FF" opacity="0.35" filter="url(#glow)"/>
+  <path d="M341 274C341 236 384 213 416 233L748 442C798 474 798 550 748 582L416 791C384 811 341 788 341 750V274Z" fill="url(#prism)"/>
+  <path d="M393 300C393 282 413 271 429 281L714 461C751 484 751 540 714 563L429 743C413 753 393 742 393 724V300Z" fill="#FFFFFF" fill-opacity="0.96"/>
+  <path d="M393 300C393 282 413 271 429 281L714 461" stroke="#FFFFFF" stroke-opacity="0.52" stroke-width="10" stroke-linecap="round"/>
+  <circle cx="280" cy="244" r="20" fill="#5BE0FF" fill-opacity="0.88"/>
+</svg>

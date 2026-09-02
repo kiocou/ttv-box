@@ -1,0 +1,319 @@
+<!DOCTYPE html><html class="dark" lang="en" style="width: 1280px; height: 1024px; overflow: hidden; position: relative;"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>TTV Cinema - Movie Detail</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-tint": "#7bd0ff",
+                        "on-primary-container": "#004965",
+                        "tertiary-fixed": "#6ffbbe",
+                        "background": "#111318",
+                        "primary": "#8ed5ff",
+                        "inverse-on-surface": "#2f3035",
+                        "on-secondary": "#472a00",
+                        "surface-variant": "#333539",
+                        "on-background": "#e2e2e8",
+                        "error": "#ffb4ab",
+                        "secondary-fixed-dim": "#ffb95f",
+                        "surface-container-low": "#1a1c20",
+                        "secondary-fixed": "#ffddb8",
+                        "on-primary": "#00354a",
+                        "on-error-container": "#ffdad6",
+                        "primary-fixed": "#c4e7ff",
+                        "secondary": "#ffb95f",
+                        "on-error": "#690005",
+                        "on-secondary-fixed": "#2a1700",
+                        "glass-surface": "rgba(10, 12, 16, 0.85)",
+                        "on-tertiary-container": "#004e34",
+                        "tech-cyan": "#38bdf8",
+                        "on-secondary-fixed-variant": "#653e00",
+                        "on-primary-fixed-variant": "#004c69",
+                        "error-container": "#93000a",
+                        "inverse-primary": "#00668a",
+                        "on-tertiary-fixed": "#002113",
+                        "tertiary": "#56e5a9",
+                        "on-tertiary-fixed-variant": "#005236",
+                        "primary-fixed-dim": "#7bd0ff",
+                        "surface-container-lowest": "#0c0e12",
+                        "tertiary-container": "#30c88f",
+                        "primary-container": "#38bdf8",
+                        "tertiary-fixed-dim": "#4edea3",
+                        "surface-bright": "#37393e",
+                        "on-primary-fixed": "#001e2c",
+                        "rating-gold": "#f59e0b",
+                        "surface": "#111318",
+                        "outline": "#87929a",
+                        "on-tertiary": "#003824",
+                        "surface-container": "#1e2024",
+                        "inverse-surface": "#e2e2e8",
+                        "secondary-container": "#ee9800",
+                        "status-green": "#10b981",
+                        "on-surface-variant": "#bdc8d1",
+                        "on-secondary-container": "#5b3800",
+                        "outline-variant": "#3e484f",
+                        "obsidian-base": "#0a0c10",
+                        "surface-container-highest": "#333539",
+                        "on-surface": "#e2e2e8",
+                        "surface-dim": "#111318",
+                        "surface-container-high": "#282a2e"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-mobile": "16px",
+                        "gutter": "24px",
+                        "ratio-media": "2/3",
+                        "unit": "4px",
+                        "margin-desktop": "48px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "display-lg": ["Plus Jakarta Sans"],
+                        "metric-sm": ["JetBrains Mono"],
+                        "body-lg": ["Plus Jakarta Sans"],
+                        "metric-md": ["JetBrains Mono"],
+                        "headline-lg-mobile": ["Plus Jakarta Sans"],
+                        "body-md": ["Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "metric-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "metric-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .glow-cyan {
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.3);
+        }
+        .text-glow-cyan {
+            text-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+        }
+        .glass-panel {
+            background: rgba(10, 12, 16, 0.6);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .glass-card {
+            background: linear-gradient(145deg, rgba(30, 32, 36, 0.4) 0%, rgba(10, 12, 16, 0.8) 100%);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        }
+        /* Custom scrollbar for webkit */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(56, 189, 248, 0.5);
+        }
+        
+        .stacked-poster::before {
+            content: '';
+            position: absolute;
+            inset: -10px;
+            background: inherit;
+            filter: blur(20px);
+            opacity: 0.5;
+            z-index: -1;
+            transform: translateY(10px) scale(0.95);
+        }
+        .liquid-nav {
+            background: linear-gradient(180deg, rgba(10,12,16,0.9) 0%, rgba(10,12,16,0.6) 50%, rgba(10,12,16,0.0) 100%);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+    </style>
+</head>
+<body class="bg-obsidian-base text-on-surface font-body-md h-screen w-screen overflow-hidden selection:bg-tech-cyan/30 selection:text-tech-cyan">
+<!-- Immersive Background -->
+<div class="fixed inset-0 z-0 pointer-events-none">
+<div class="absolute inset-0 bg-cover bg-center opacity-40 mix-blend-luminosity scale-105" data-alt="A cinematic, ultra-dark immersive background for a sci-fi movie page. Features a subtle, colossal glowing green ring structure faintly visible against a stormy, atmospheric sky over a desolate midwestern American landscape. High contrast, volumetric fog, dark obsidian and deep emerald tones. Minimal visual noise, designed to sit behind UI elements." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDTJPVKTz6uvaZFEGyWrjVb8lfSQryQ-zRRuWzE4HJdojaZxKnWyDDQeQcv5vIWwWZNdtrKtiHz8eDUSMb4upmodHlM286k0gdwioBW4xbAnNaIXPW50U723eB334tAWDcOldgLDFK4i6lxIUJkllLx8PpcyJ1MXCUeDtHL_h8kXinYbEIajZZm7ol9Ptj951RVtoYjMP2GVcZ-cTpkyFXrLb832Soky63Kvns065IokAB1ky0LvnSi')"></div>
+<div class="absolute inset-0 bg-gradient-to-br from-obsidian-base via-obsidian-base/80 to-[#002113]/40"></div>
+<div class="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,#0a0c10_100%)]"></div>
+</div>
+<!-- Top Navigation Bar (Liquid Frosted Glass) -->
+<nav class="fixed top-0 left-0 right-0 z-50 flex justify-between items-center px-8 h-20 liquid-nav">
+<div class="w-full max-w-[1440px] mx-auto flex justify-between items-center">
+<!-- Back Button -->
+<button class="flex items-center gap-2 text-on-surface-variant hover:text-white transition-colors group">
+<span class="material-symbols-outlined group-hover:-translate-x-1 transition-transform" style="font-variation-settings: 'FILL' 0;">arrow_back</span>
+<span class="font-headline-md text-body-md font-bold tracking-wide">返回</span>
+</button>
+<!-- Centered Nav Links -->
+<div class="hidden md:flex items-center gap-10">
+<a class="text-on-surface-variant hover:text-white transition-colors font-headline-md text-body-md tracking-wide" href="#">首页</a>
+<a class="text-on-surface-variant hover:text-white transition-colors font-headline-md text-body-md tracking-wide" href="#">媒体库</a>
+<a class="text-white relative after:content-[''] after:absolute after:-bottom-2 after:left-1/2 after:-translate-x-1/2 after:w-1.5 after:h-1.5 after:bg-tech-cyan after:rounded-full font-headline-md text-body-md tracking-wide text-glow-cyan" href="#">影视库</a>
+<a class="text-on-surface-variant hover:text-white transition-colors font-headline-md text-body-md tracking-wide" href="#">云盘</a>
+<a class="text-on-surface-variant hover:text-white transition-colors font-headline-md text-body-md tracking-wide" href="#">收藏</a>
+</div>
+<!-- Trailing Actions -->
+<div class="flex items-center gap-6">
+
+
+</div>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="relative z-10 w-full h-full max-w-[1440px] mx-auto pt-28 px-8 md:px-12 lg:px-24 overflow-y-auto pb-32">
+<!-- Top Section: Poster and Meta -->
+<div class="flex flex-col lg:flex-row gap-16 items-start mt-8">
+<!-- Left: Poster & Quick Actions -->
+<div class="w-full lg:w-[320px] shrink-0 flex flex-col gap-8">
+<!-- Poster Card -->
+<div class="relative w-full aspect-[2/3] rounded-2xl overflow-visible group">
+<div class="absolute inset-0 rounded-2xl bg-gradient-to-b from-tech-cyan/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl"></div>
+<div class="relative w-full h-full rounded-2xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-white/10 group-hover:border-tech-cyan/30 transition-colors duration-500 z-10 stacked-poster" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBC6h6xz7xrdD5OIdZAqjtJTDhvbXc6B7aE5gMjBmhoWv6r2RQ-5r-RSBHN5dT2G4QlW2kOE9ms_BrZTA_UkJmjbOw9gt8YKyG8eY8-083POCuz6IJE0MO7bPyGimo5pUm6kXQZ-TKLBgrkVfipEnSDSxzoewj8ViEBDQDgLJBXhLCfhgqCeZKyZkkIGM7EL8LqFNhrALLOUKvmt4OJQD84ENHGCvPNTemANMUg_EmjQDzOviP24eFHYaA-3xwiLwt9KA'); background-size: cover; background-position: center;">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 group-hover:opacity-80" data-alt="Official movie poster for 'Green Lantern' featuring two male characters in a desolate landscape with a glowing green sky anomaly." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBC6h6xz7xrdD5OIdZAqjtJTDhvbXc6B7aE5gMjBmhoWv6r2RQ-5r-RSBHN5dT2G4QlW2kOE9ms_BrZTA_UkJmjbOw9gt8YKyG8eY8-083POCuz6IJE0MO7bPyGimo5pUm6kXQZ-TKLBgrkVfipEnSDSxzoewj8ViEBDQDgLJBXhLCfhgqCeZKyZkkIGM7EL8LqFNhrALLOUKvmt4OJQD84ENHGCvPNTemANMUg_EmjQDzOviP24eFHYaA-3xwiLwt9KA">
+<!-- Floating Logo Top Left -->
+<div class="absolute top-5 left-5 z-20 mix-blend-plus-lighter">
+<img alt="DC Studios" class="h-6 w-auto opacity-90" data-alt="A clean, minimalist DC Studios logo in white against a transparent background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA7SZpt6mS9daTO_kHJcSYJAYu4LTxDIXoeN7K3bPS1KT2YUIlb4driqcbP0dWeWOtbs7l7zeTyjUGFDlxRlHDPWk3KKjIpmsvAKExlk9uqMnovL-yo5vuTQ4XdyspvOLE9IJVnIJeum1M6Kbhm7v25CAHdtMPtOR6vJy1QIPFIS4dw3KDTp2qNVgp_RdeNpJ_CXHaB0lJBxDfCVf0nwQP3TwqrggAj5sM1i4ClYvxVMD9e7OReC0KO">
+</div>
+<!-- Play Overlay -->
+<div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-500 bg-obsidian-base/30 backdrop-blur-[2px] z-20">
+<button class="w-24 h-24 rounded-full bg-tech-cyan/20 backdrop-blur-md flex items-center justify-center border border-tech-cyan/50 hover:bg-tech-cyan hover:scale-110 hover:shadow-[0_0_30px_rgba(56,189,248,0.5)] transition-all duration-300 group/btn">
+<span class="material-symbols-outlined text-6xl text-white ml-2 group-hover/btn:text-obsidian-base transition-colors" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="flex justify-between gap-4 px-2">
+<button class="flex-1 py-4 rounded-xl glass-card flex flex-col items-center justify-center gap-2 text-on-surface-variant hover:text-error hover:border-error/40 transition-all duration-300 group">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform" style="font-variation-settings: 'FILL' 0;">favorite</span>
+<span class="text-xs font-medium">收藏</span>
+</button>
+<button class="flex-1 py-4 rounded-xl glass-card flex flex-col items-center justify-center gap-2 text-on-surface-variant hover:text-tech-cyan hover:border-tech-cyan/40 transition-all duration-300 group">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform" style="font-variation-settings: 'FILL' 0;">edit</span>
+<span class="text-xs font-medium">编辑</span>
+</button>
+<button class="flex-1 py-4 rounded-xl glass-card flex flex-col items-center justify-center gap-2 text-on-surface-variant hover:text-tertiary-fixed hover:border-tertiary-fixed/40 transition-all duration-300 group">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform" style="font-variation-settings: 'FILL' 0;">bar_chart</span>
+<span class="text-xs font-medium">统计</span>
+</button>
+</div>
+</div>
+<!-- Right: Info Panel (Deep Glass) -->
+<div class="w-full lg:flex-1 flex flex-col">
+<div class="rounded-3xl p-8 lg:p-12 bg-white/[0.02] backdrop-blur-3xl border border-white/5 shadow-2xl relative overflow-hidden">
+<!-- Subtle gradient wash inside panel -->
+<div class="absolute top-0 right-0 w-96 h-96 bg-tech-cyan/5 rounded-full blur-[100px] -z-10 pointer-events-none"></div>
+<!-- Title -->
+<h1 class="font-display-lg text-5xl md:text-6xl text-white tracking-tight mb-6 font-bold">
+                    绿光军团
+                </h1>
+<!-- Meta Info Row -->
+<div class="flex flex-wrap items-center gap-6 mb-10">
+<div class="flex items-center gap-2 bg-rating-gold/10 border border-rating-gold/20 px-5 py-2 rounded-xl backdrop-blur-md">
+<span class="material-symbols-outlined text-rating-gold text-base" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-metric-md text-xl text-rating-gold font-bold">7.6</span>
+</div>
+<div class="flex items-center gap-4 px-5 py-2 rounded-xl bg-white/5 border border-white/10 backdrop-blur-md">
+<span class="font-metric-sm text-base text-on-surface-variant">2026</span>
+<span class="w-1.5 h-1.5 rounded-full bg-white/20"></span>
+<span class="font-body-md text-base text-on-surface-variant tracking-wide">剧情 / 悬疑 / Sci-Fi &amp; Fantasy</span>
+</div>
+</div>
+<!-- Synopsis -->
+<div class="mb-12">
+<h3 class="font-headline-md text-xl text-white mb-4 flex items-center gap-3">
+<span class="w-1.5 h-6 bg-tech-cyan rounded-full"></span>
+                    剧情简介
+                </h3>
+<p class="font-body-lg text-lg text-on-surface-variant/90 leading-relaxed max-w-4xl tracking-wide">
+                    跟随约翰·斯图尔特与绿灯军团传奇哈尔·乔丹的脚步，看这两位星际警察如何深入美国腹地，调查一起谋杀命案。在这个充满未知的宇宙中，他们将面对前所未有的挑战与阴谋。
+                </p>
+</div>
+<!-- Cast & Crew Section -->
+<div>
+<h3 class="font-headline-md text-xl text-white mb-6 flex items-center gap-3">
+<span class="w-1.5 h-6 bg-tertiary-fixed rounded-full"></span>
+                    演职人员
+                </h3>
+<div class="flex gap-4 overflow-x-auto pb-4 scroll-smooth">
+<!-- Cast Card 1 -->
+<div class="glass-card p-3 rounded-2xl flex flex-col items-center gap-3 shrink-0 min-w-[120px] hover:border-white/20 transition-colors cursor-pointer group">
+<div class="w-20 h-20 rounded-full overflow-hidden border-2 border-white/10 group-hover:border-tech-cyan/50 transition-colors">
+<img alt="Director" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDv4TphIa4XBVjHWMzdv1xeOJc4p8O5GKdk6tyuU3pSTi2OvyhZqPh6lTFcTUphgZcTGHj3n2FuV2V2tXMCapxgr87AIvxOu6p3QQV6AFxDE4cFX2IQAW6uVdPuQ3It-HJ5zmJJbmzAFKALv-9Q9mHO_rCaw_KZtUCKeK8Qf7ke2SAXttOq2OcZ5Nyg7mkarq9PasTarxwY4ezlOZDvct39n1Ty64g2ql2T4Yj2OFB8hzyDr7cZUVm8">
+</div>
+<div class="text-center">
+<p class="text-sm text-white font-medium mb-0.5">詹姆斯·古恩</p>
+<span class="text-[11px] text-on-surface-variant/70 uppercase tracking-wider">导演</span>
+</div>
+</div>
+<!-- Empty Cast Card -->
+<div class="glass-card p-3 rounded-2xl flex flex-col items-center gap-3 shrink-0 min-w-[120px] hover:border-white/20 transition-colors cursor-pointer group">
+<div class="w-20 h-20 rounded-full bg-white/5 border-2 border-white/10 group-hover:border-white/30 transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined text-white/20 text-3xl">person</span>
+</div>
+<div class="text-center">
+<p class="text-sm text-white font-medium mb-0.5">未公布</p>
+<span class="text-[11px] text-on-surface-variant/70 uppercase tracking-wider">主演</span>
+</div>
+</div>
+<!-- Empty Cast Card -->
+<div class="glass-card p-3 rounded-2xl flex flex-col items-center gap-3 shrink-0 min-w-[120px] hover:border-white/20 transition-colors cursor-pointer group">
+<div class="w-20 h-20 rounded-full bg-white/5 border-2 border-white/10 group-hover:border-white/30 transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined text-white/20 text-3xl">person</span>
+</div>
+<div class="text-center">
+<p class="text-sm text-white font-medium mb-0.5">未公布</p>
+<span class="text-[11px] text-on-surface-variant/70 uppercase tracking-wider">主演</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom Section: Version Selection -->
+<div class="mt-16 w-full">
+<h3 class="font-headline-md text-2xl text-white mb-6 flex items-center gap-3 px-4">
+<span class="w-1.5 h-8 bg-rating-gold rounded-full"></span>
+                版本选择
+            </h3>
+<div class="glass-card rounded-3xl p-12 flex flex-col items-center justify-center min-h-[240px] border-dashed border-white/20 hover:border-white/40 transition-colors cursor-pointer group relative overflow-hidden">
+<div class="absolute inset-0 bg-gradient-to-t from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<span class="material-symbols-outlined text-6xl text-on-surface-variant/30 mb-4 group-hover:text-on-surface-variant/50 transition-colors group-hover:scale-110 duration-300" style="font-variation-settings: 'FILL' 0;">movie_off</span>
+<p class="font-body-lg text-on-surface-variant/70 tracking-wide">暂无可播放源</p>
+</div>
+</div>
+</main>
+<!-- Global Floating Notification Button -->
+<button class="fixed bottom-10 right-10 z-50 w-16 h-16 rounded-full bg-tech-cyan text-obsidian-base flex items-center justify-center hover:scale-110 hover:shadow-[0_0_30px_rgba(56,189,248,0.6)] transition-all duration-300 border-2 border-white/20">
+<span class="material-symbols-outlined text-3xl" style="font-variation-settings: 'FILL' 0;">notifications</span>
+</button>
+
+
+<div id="snapdom-sandbox" data-snapdom-sandbox="true" aria-hidden="true" style="position: absolute; left: -9999px; top: -9999px; width: 0px; height: 0px; overflow: hidden;"></div></body></html>

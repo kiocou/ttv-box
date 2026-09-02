@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TTV Native Player</title>
+  <style>
+    /* 透明页面：libmpv 在 WebView 下方渲染，HTML 只画控件层 */
+    html,body{margin:0;width:100%;height:100%;overflow:hidden;background:transparent}
+    body{font-family:"Inter","HarmonyOS Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+         color:#fff;user-select:none;-webkit-user-select:none;cursor:default}
+    .overlay{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
+             pointer-events:none}
+    .overlay.hidden{display:none}
+    .status-chip{display:flex;align-items:center;gap:9px;
+                 padding:8px 12px;border-radius:999px;
+                 background:rgba(10,14,20,.66);border:1px solid rgba(255,255,255,.1);
+                 backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+                 box-shadow:0 8px 28px rgba(0,0,0,.3);pointer-events:auto;max-width:70%}
+    .spinner{width:14px;height:14px;border-radius:50%;
+             border:1.5px solid rgba(255,255,255,.2);border-top-color:#4da3ff;
+             animation:spin .72s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .status-text{font-size:12.5px;font-weight:600;letter-spacing:.1px}
+    .status-sub{display:none}
+    .close-btn{position:fixed;top:14px;right:14px;width:36px;height:36px;border-radius:50%;
+               border:1px solid rgba(255,255,255,.16);background:rgba(12,16,23,.66);
+               color:rgba(238,242,248,.85);display:grid;place-items:center;cursor:pointer;
+               opacity:0;transition:opacity .25s ease,background .2s ease,transform .2s ease;
+               backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);z-index:10}
+    .close-btn svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2.4}
+    body.ui-visible .close-btn{opacity:1}
+    .close-btn:hover{background:rgba(239,68,68,.85);color:#fff;transform:scale(1.08)}
+    .hint{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);
+          font-size:11px;color:rgba(238,242,248,.4);letter-spacing:.4px;
+          opacity:0;transition:opacity .3s ease;pointer-events:none;white-space:nowrap}
+    body.ui-visible .hint{opacity:1}
+  </style>
+</head>
+<body aria-label="Native video surface">
+  <div class="overlay" id="overlay">
+    <div class="status-chip" id="statusChip">
+      <div class="spinner" id="spinner"></div>
+      <div class="status-text" id="statusText">正在启动…</div>
+      <div class="status-sub" id="statusSub"></div>
+    </div>
+  </div>
+  <button class="close-btn" id="closeBtn" title="关闭播放器 (Esc)">
+    <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>
+  </button>
+  <div class="hint">空格 暂停 · ←/→ 快退快进 10 秒 · Esc 关闭</div>
+  <script>
+    (function(){
+      var invoke = window.__TAURI__ && window.__TAURI__.core ? window.__TAURI__.core.invoke : null;
+      var overlay = document.getElementById('overlay');
+      var spinner = document.getElementById('spinner');
+      var statusText = document.getElementById('statusText');
+      var statusSub = document.getElementById('statusSub');
+      var pollTimer = null;
+      var seenVideo = false;
+      var lastPosition = 0;
+
+      function close(){
+        if(pollTimer){ clearInterval(pollTimer); pollTimer = null; }
+        if(invoke){ invoke('player_native_close').catch(function(){}); }
+      }
+      function sendCommand(command){
+        if(invoke){ invoke('player_command', {command: command}).catch(function(){}); }
+      }
+      function showStatus(text, sub, withSpinner){
+        overlay.classList.remove('hidden');
+        statusText.textContent = text;
+        statusSub.textContent = sub || '';
+        spinner.style.display = withSpinner ? 'block' : 'none';
+        document.body.classList.add('ui-visible');
+      }
+      function hideOverlay(){
+        overlay.classList.add('hidden');
+        document.body.classList.remove('ui-visible');
+      }
+
+      function snapshotStatus(s){
+        var status = String(s && s.status || '').toLowerCase();
+        if(typeof s?.positionSeconds === 'number' && Number.isFinite(s.positionSeconds)){
+          lastPosition = s.positionSeconds;
+        }
+        if(status === 'error'){
+          var reason = s.degradationReason === 'network' ? '网络连接失败'
+            : s.degradationReason === 'permission' ? '没有访问权限（链接可能已过期）'
+            : '无法解码该媒体';
+          showStatus('播放失败 · ' + reason, (s.error || '').slice(0, 120), false);
+          return;
+        }
+        if(status === 'ended'){
+          showStatus('播放结束', '', false);
+          return;
+        }
+        if(status === 'buffering' && !seenVideo){
+          var pct = s.bufferedPercent != null ? Math.round(s.bufferedPercent) + '%' : '';
+          showStatus('缓冲中 ' + pct, '', true);
+          return;
+        }
+        if(status === 'playing' || status === 'paused'){
+          if(!seenVideo && (s.firstFrameReady === true || s.positionSeconds > 0.04)){
+            seenVideo = true;
+            hideOverlay();
+            setTimeout(function(){ document.body.classList.remove('ui-visible'); }, 2600);
+          }
+        }
+      }
+      function poll(){
+        if(!invoke) return;
+        invoke('player_state').then(snapshotStatus).catch(function(){});
+      }
+
+      document.getElementById('closeBtn').addEventListener('click', close);
+      window.addEventListener('keydown', function(event){
+        switch(event.key){
+          case 'Escape': close(); break;
+          case ' ': event.preventDefault(); sendCommand({type:'togglePause'}); break;
+          // 后端 seek 为绝对定位：基于最近一次快照进度换算 ±10 秒
+          case 'ArrowLeft': sendCommand({type:'seek', positionSeconds: Math.max(0, lastPosition - 10)}); break;
+          case 'ArrowRight': {
+            var target = lastPosition + 10;
+            sendCommand({type:'seek', positionSeconds: target});
+            lastPosition = target;
+            break;
+          }
+        }
+      });
+      // 鼠标移动时短暂显示关闭按钮与提示
+      var uiHideTimer = null;
+      window.addEventListener('mousemove', function(){
+        document.body.classList.add('ui-visible');
+        if(uiHideTimer) clearTimeout(uiHideTimer);
+        uiHideTimer = setTimeout(function(){
+          if(seenVideo) document.body.classList.remove('ui-visible');
+        }, 2600);
+      });
+
+      if(!invoke){
+        showStatus('播放内核不可用', '缺少 Tauri 运行环境', false);
+      }else{
+        pollTimer = setInterval(poll, 800);
+        poll();
+      }
+    })();
+  </script>
+</body>
+</html>
